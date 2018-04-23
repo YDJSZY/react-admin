@@ -1,0 +1,34 @@
+.shadow-container{
+    position: relative;
+    width:100%;
+    height:100%;
+}
+
+.shadow{
+    position: absolute;
+    z-index: 2;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0);
+    text-align: center;
+    display: block;
+    top:0;
+    left:0;
+    box-sizing: content-box;
+    transition: all 0.35s ease-in-out;
+}
+
+.shadow-container:hover>.shadow{
+    background: rgba(0,0,0,0.5);
+}
+
+.shadow span.action i{
+    display:inline-block;
+    color:#fff;
+    opacity:0;
+    transition: opacity 0.35s ease-in-out;
+}
+
+.shadow:hover>span.action i{
+    opacity:1;
+}
