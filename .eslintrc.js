@@ -20,7 +20,7 @@ module.exports = {
             "error",
             "tab"
         ],
-        "no-var": "error",
+        "no-var": 0,
         "indent": [2, 4],
         "spaced-comment": 0,
         "no-console": 0,

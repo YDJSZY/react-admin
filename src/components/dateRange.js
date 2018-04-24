@@ -6,6 +6,7 @@ import { DatePicker } from 'antd';
 import SelectComponent from './select';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+const { RangePicker } = DatePicker;
 const dateRangeSelect = require("../untils/dateRangeSelect");
 moment.locale('zh-cn');
 const namedDateRanges = [
@@ -34,89 +35,60 @@ export default class DateRange extends React.Component {
     //static propTypes = {
     //name: React.PropTypes.string
     //}
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.state = {
             dateValue: [],
-            disabledDateRange:true,
-            selectDateRangeName:this.props.dateRangeName || "今天"
+            disabledDateRange: true,
+            selectDateRangeName: this.props.dateRangeName || "今天"
         };
     }
 
-    dateRangeChange = (val,noReq)=> {/*日期范围改变*/
-        var dateRangeName = val;
-        var dateRange = dateRangeSelect(dateRangeName);
-        var arr = [moment(dateRange.begin_time,dateFormat),moment(dateRange.end_time,dateFormat)];
+    dateRangeChange = (val, noReq) => {/*日期范围改变*/
+        let dateRangeName = val;
+        let dateRange = dateRangeSelect(dateRangeName);
+        let arr = [moment(dateRange.begin_time,dateFormat),moment(dateRange.end_time,dateFormat)];
         this.emitDateRangeChange(dateRange,noReq);
         this.setState({
-            selectDateRangeName:dateRangeName,
+            selectDateRangeName: dateRangeName,
             dateValue:arr,
-            disabledDateRange:dateRange.dateRangeName == "自定义" ? false : true
+            disabledDateRange: dateRange.dateRangeName == "自定义" ? false : true
         })
     }
 
-    emitDateRangeChange(dateRange,noReq) {
-        this.props.onDateRangeChange(dateRange,noReq);/*触发父组件的日期选择回调*/
+    rangePickerOnChange = (val) => {
+        let dateRange = {begin_time: val[0], end_time: val[1]}
+        this.setState({dateValue: val});
+        this.emitDateRangeChange(dateRange)
     }
 
-    beginDateChange = (date)=> {
-        var dateValue = this.state.dateValue;
-        dateValue[0] = moment(date._d,dateFormat);
-        this.setState({
-            dateValue:dateValue,
-        },()=>{
-            this.props.cacheParams.begin_time = +new Date(dateValue[0]._d);
-        })
-    }
-
-    endDateChange = (date)=> {
-        var dateValue = this.state.dateValue;
-        dateValue[1] = moment(date._d,dateFormat);
-        this.setState({
-            dateValue:dateValue,
-        },()=>{
-            this.props.cacheParams.end_time = +new Date(dateValue[1]._d);
-        })
-    }
-
-    disabledBeginDate = (current)=> {/*开始日期不能大于结束日期*/
-        return current && current.valueOf() > +new Date(this.state.dateValue[1]);
-    }
-
-    disabledEndDate = (current)=> {/*结束日期不能小于开始日期*/
-        return current && current.valueOf() < +new Date(this.state.dateValue[0]);
+    emitDateRangeChange (dateRange, noReq) {
+        this.props.onDateRangeChange(dateRange, noReq);/*触发父组件的日期选择回调*/
     }
 
     componentWillMount() {
     }
 
     componentDidMount(){
+        console.log(this.props.dateRangeName)
         this.dateRangeChange(this.props.dateRangeName,true);
     }
 
     render() {
-        var selectDateRangeName = this.state.selectDateRangeName || this.props.dateRangeName;
+        let selectDateRangeName = this.state.selectDateRangeName || this.props.dateRangeName;
         return  <div style={{display:"inline-block"}}>
-            <div className="form-group">
-                <SelectComponent
-                    allowClear={false}
-                    optionValue="value"
-                    value={selectDateRangeName}
-                    style={{width:"110px"}}
-                    onSelect={this.dateRangeChange}
-                    source={namedDateRanges}>
-                </SelectComponent>
-            </div>
-            <div className="form-group">
-                <DatePicker
-                    value={this.state.dateValue[0]} onChange={this.beginDateChange}
-                    disabled={this.state.disabledDateRange} disabledDate={this.disabledBeginDate}>
-                </DatePicker>
-                <DatePicker
-                    value={this.state.dateValue[1]} onChange={this.endDateChange}
-                    disabled={this.state.disabledDateRange} disabledDate={this.disabledEndDate}>
-                </DatePicker>
-            </div>
+            <SelectComponent
+                allowClear={false}
+                optionValue="value"
+                value={selectDateRangeName}
+                style={{width:"110px"}}
+                onSelect={this.dateRangeChange}
+                source={namedDateRanges}>
+            </SelectComponent>
+            <RangePicker
+                value={this.state.dateValue}
+                onChange={this.rangePickerOnChange}
+            />
         </div>
     }
 }

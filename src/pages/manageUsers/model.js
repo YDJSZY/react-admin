@@ -2,8 +2,9 @@
  * Created by luwenwei on 17/9/3.
  */
 import React from 'react';
-import { getConstantObjectValue } from '../../untils/commonMethods'
-import { renderAvatar,renderEnabled,renderTooltip } from '../../untils/renderData';
+import { Button, Divider } from 'antd';
+import { getConstantObjectValue } from '../../untils/commonMethods';
+import { renderAvatar, renderEnabled, renderTooltip } from '../../untils/renderData';
 import moment from 'moment';
 let model = {
     getFields:function (context) {
@@ -14,29 +15,36 @@ let model = {
                 key: 'id',
                 sorter:true,/*服务端排序*/
                 show:true,
+                dataIndex: 'id'
             },
             {
                 title: '用户名',
                 key: 'username',
+                dataIndex: 'username',
                 show: true,
-            },{
+            },
+            {
                 title: '昵称',
                 key: 'nickname',
+                dataIndex: 'nickname',
                 show: true,
                 use: true,
                 sorter: true,
                 edit:true,
                 required:true,
                 type:'text',
-            },{
+            },
+            {
                 title: '联系方式',
                 key: 'phone',
+                dataIndex: 'phone',
                 show: true,
                 use: true
             },
             {
                 title: '性别',
                 key: 'sex',
+                dataIndex: 'sex',
                 edit:true,
                 show: true,
                 placeholder:'必选',
@@ -53,11 +61,13 @@ let model = {
             {
                 title: '活跃度',
                 key: 'activity',
+                dataIndex: 'activity',
                 show: true
             },
             {
                 title: '来源平台',
                 key: 'platform',
+                dataIndex: 'platform',
                 show: true,
                 render: function (val) {
                     return getConstantObjectValue('UserPlatform', val);
@@ -69,16 +79,18 @@ let model = {
             {
                 title: '标签',
                 key: 'tags',
+                dataIndex: 'tags',
                 show: true,
                 edit:true,
                 type:'text',
                 render: function (val) {
-                    return val.join();
+                    return val;
                 }
             },
             {
                 title: '关注',
                 key: 'enabled',
+                dataIndex: 'enabled',
                 show: true,
                 type:'switch',
                 render: function (val) {
@@ -88,6 +100,7 @@ let model = {
             {
                 title: '创建时间',
                 key: 'created',
+                dataIndex: 'created',
                 show: true,
                 render: function (val) {
                     return moment(val).format('YYYY-MM-DD HH:mm:ss');
@@ -96,17 +109,18 @@ let model = {
             {
                 title: '头像',
                 key: 'headimg',
+                dataIndex: 'headimg',
                 show: true,
                 edit:true,
                 type:'img',
                 uploadBtnText:'上传头像',
                 render: (val,record) =>{
-                    return renderAvatar(val)
+                    return renderAvatar(val);
                 },
                 options: {
                     key: 'headimg',
                     callBack: function (file) {
-                        self.uploadFile(file,this.key)
+                        self.uploadFile(file,this.key);
                     }
                 }
             },
@@ -116,11 +130,15 @@ let model = {
                 show: true,
                 eyeWatch: false,
                 style:{width:'20px'},
-                render: (text, record, dataTableRef) => {
+                render: (text, record) => {
                     return <span>
-                        <button className='btn btn-primary btn-xs' onClick={()=>{self.tableAction.edit(record)}}>编辑</button>
-                        <span className='seperate-line'></span>
-                        <a className='btn btn-xs btn-info' href={'#/orderRecord/?user='+record.id} target='_blank'>拼单记录</a>
+                        <Button type='primary' size='small' style={{ fontSize: '12px'}} onClick={()=>{self.tableAction.edit(record);}}>编辑</Button>
+                        <Divider type="vertical" />
+                        <a href={'#/orderRecord/?user='+record.id} target='_blank'>
+                            <Button type='primary' size='small' style={{ fontSize: '12px'}}>
+                                拼单记录
+                            </Button>
+                        </a>
                     </span>;
                 }
             }
@@ -128,4 +146,4 @@ let model = {
     }
 }
 
-export {model};
+export { model };

@@ -9,7 +9,6 @@ import '../../node_modules/rc-switch/assets/index.css'
 import SelectComponent from './select';
 import axios from '../config/axiosConfig';
 import {constants} from '../untils/global';
-import UploadFileModal from './uploadFileModal';
 import baseConfig from '../config/baseConfig';
 import { InputComponent } from './formComponents';
 import { translateSelectSource } from '../untils/commonMethods';
@@ -308,7 +307,6 @@ export default class TableCrudModal extends React.Component {
                     </div>
                 </div>
             </div>
-            <UploadFileModal ref={ref => this.$uploadFileModal = ref}></UploadFileModal>
         </div>
     }
 }

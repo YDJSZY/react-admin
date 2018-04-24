@@ -4,7 +4,7 @@
 let path = require('path');
 let CleanWebpackPlugin = require('clean-webpack-plugin');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
-let MiniCssExtractPlugin = require('mini-css-extract-plugin');
+let ExtractTextPlugin = require("extract-text-webpack-plugin");
 let env = process.env.NODE_ENV;
 let webpackConfig = {
     //入口文件输出配置
@@ -21,16 +21,25 @@ let webpackConfig = {
                 loader: 'babel-loader',
                 query: {
                     cacheDirectory: true,
-                    plugins: ['transform-runtime',['import', [{ libraryName: 'antd', 'libraryDirectory': 'es', style: 'css' }]]],
+                    plugins: ['transform-runtime', 'transform-decorators-legacy', ['import', [{ libraryName: 'antd', 'libraryDirectory': 'es', style: 'css' }]]],
                     presets:['es2015','react','stage-0']
                 }
             },
             {
                 test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader, // replace ExtractTextPlugin.extract({..})
-                    'css-loader'
-                ]
+                exclude: [path.join(__dirname,'./node_modules/antd'), path.join(__dirname, './src/styles')],
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })
+            },
+            {
+                test: /\.css$/,
+                include:[
+                    path.join(__dirname, './node_modules/antd'),
+                    path.join(__dirname, './src/styles'),
+                ],
+                loader : 'style-loader!css-loader',// 一定要有style-loader
             },
             { test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, loader: 'url-loader?limit=50000&name=font/[name].[ext]'}
         ]
@@ -40,31 +49,14 @@ let webpackConfig = {
         extensions: ['.js', '.json'],
         alias: {
             'commonMethods': __dirname+'/src/utils/commonMethods.js',
-            'uploadFile': __dirname+'/src/packages/fileUpload/dist/js/upload-file.min.js',
             'react/lib/ReactMount': 'react-dom/lib/ReactMount'
         }
     },
-
-    /*optimization: {
-        runtimeChunk: {
-            name: 'manifest'
-        },
-        splitChunks: {
-            cacheGroups: {
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    priority: -20,
-                    chunks: 'all'
-                }
-            }
-        }
-    },*/
     //插件项
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html',
-            filename: './index.html',
+            filename: 'index.html',
             inject: true, // 自动注入
             minify: {
                 removeComments: true, // 去注释

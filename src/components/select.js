@@ -19,10 +19,10 @@ export default class SelectComponent extends React.Component {
         var model = this.props.model;
         var ele = ReactDOM.findDOMNode(this.$selectRef);
         this.props.onSelect(selectValue,model);
-        var selectPlaceholder = $(ele).find(".ant-select-selection__placeholder");
-        selectPlaceholder.hide();
+        /*var selectPlaceholder = $(ele).find(".ant-select-selection__placeholder");
+        selectPlaceholder.hide();*/
         if(selectValue === undefined){
-            selectPlaceholder.show();
+            //selectPlaceholder.show();
             selectValue = null;
         }
         this.setState({selectValue});

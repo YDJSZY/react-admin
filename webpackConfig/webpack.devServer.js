@@ -1,11 +1,12 @@
 /**
  * Created by luwenwei on 17/9/14.
  */
-let MiniCssExtractPlugin = require('mini-css-extract-plugin')
-let CopyWebpackPlugin = require('copy-webpack-plugin')
+let CopyWebpackPlugin = require('copy-webpack-plugin');
+let ExtractTextPlugin = require("extract-text-webpack-plugin");
+let webpack = require('webpack');
 let path = require('path');
-let argv = process.argv
-let port = argv[argv.length - 1] || 3000 /*npm start -- --port 3000*/
+let argv = process.argv;
+let port = argv[argv.length - 1] || 3000; /*npm start -- --port 3000*/
 let config = {
     output:{
         path: path.resolve(__dirname, 'dist'),
@@ -64,12 +65,9 @@ let config = {
             { from: './myinfo.json', to: path.resolve(__dirname, 'dist') },
             { from: './data.json', to: path.resolve(__dirname, 'dist') }
         ]),
-        new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: '[name].css',
-            chunkFilename: '[id].css'
-        })
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({names: ['jquery','react','vendor', 'manifest']}),
+        new ExtractTextPlugin('styles.css')
     ]
 };
 

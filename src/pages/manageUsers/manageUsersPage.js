@@ -3,17 +3,19 @@
  */
 import React from 'react';
 import { model } from './model';
+import { Card, Button, Form, Input, Icon, Table } from 'antd';
 import DataTable from '../../components/dataTable';
 import TableCrudModal from '../../components/tableCrudModal';
 import Custom from '../../untils/custom';
+import tableActionHoc from '../../hoc/tableActionHoc';
+import DateRange from '../../components/dateRange';
+const FormItem = Form.Item;
+
 export default class ManageUsers extends Custom{
     constructor(props) {
         super(props);
         this.requestUrl = 'data.json/';
         this.dataModel = model.getFields(this);
-        this.loadDataParams = {
-            
-        };
         this.tableModalConfig = {
             model:this.dataModel,
             requestUrl: 'data.json'
@@ -21,42 +23,26 @@ export default class ManageUsers extends Custom{
     }
 
     render () {
-        let dataStore = this.state.dataStore;
         let dataModel = this.dataModel;
-        return <section className="content" key="animation">
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h5 className="panel-title-text">
-                        <span className="parent-menu-title">用户管理</span>
-                        <span className="separator">/</span>
-                        <span className="children-menu-title">用户</span>
-                    </h5>
-                </div>
-                <div className="panel-body" style={{paddingTop: 0}}>
-                    <div className="row" style={{marginBottom: '15px'}}>
-                        <form className="form-inline filter-form" style={{margin:0}}>
-                            <div className="form-group">
-                                <input type="text" style={{display:'none'}} />
-                                <input className="form-control" type="text" onKeyUp={this.inputEnter} onChange={this.keyWordChange} id="quickSearch" placeholder="搜索"/>
-                            </div>
-                            <div className="form-group">
-                                <a className="btn btn-default" onClick={this.search}>
-                                    <i className="fa fa-search"></i>
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-                    <DataTable
-                        dataStore={dataStore}
-                        dataModel={dataModel}
-                        gotoPage={this.fetchData}
-                        ref={(ref) => { this.$dataTable = ref; }}
-                    />
-                    <TableCrudModal config={this.tableModalConfig} ref={(ref) => { this.$tableCrudModal = ref; }}>
-
-                    </TableCrudModal>
-                </div>
+        let dataSource = this.state.dataStore ? this.state.dataStore.results : [];
+        return <Card title="用户管理" style={{ width: '100%' }}>
+            <Form layout="inline" onSubmit={this.handleSubmit} className="filter-form">
+                <FormItem>
+                    <DateRange dateRangeName={this.loadDataParams.dateRangeName}
+                        cacheParams={this.loadDataParams}
+                        onDateRangeChange={this.dateRangeChange}>
+                    </DateRange>
+                </FormItem>
+                <FormItem>
+                    <Input prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="搜索" />
+                </FormItem>
+                <FormItem>
+                    <Button type='primary' onClick={this.search}>搜索</Button>
+                </FormItem>
+            </Form>
+            <div className="data-table">
+                <Table dataSource={ dataSource } columns={ dataModel } rowKey="id" />
             </div>
-        </section>;
+        </Card>;
     }
 }

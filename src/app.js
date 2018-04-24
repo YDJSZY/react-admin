@@ -8,14 +8,15 @@ import AlertContainer from 'react-alert';
 import FadeLoader from './components/fakeLoader';
 import { myInfo } from './untils/global';
 import store from './redux/store';
-import { Layout } from 'antd';
+import { Layout, Icon } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
 export default class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            myInfo
+            myInfo,
+            collapsed: false
         }
         this.alertOptions = {
             offset: 14,
@@ -33,7 +34,7 @@ export default class App extends React.Component {
         })
     }
 
-    clearQueueAnimStyle = ()=> {
+    clearQueueAnimStyle = () => {
         $(".content").css({transform:"none"})
     }
 
@@ -46,27 +47,41 @@ export default class App extends React.Component {
         })
     }
 
+    toggleMenu = () => {
+        let collapsed = !this.state.collapsed;
+        this.setState({collapsed});
+    }
+
     render() {
-        //let { username } = this.state.myInfo;
-        return <Layout>
-                <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
-                    <div className="logo app-name">
-                        <h3>React Admin</h3>
+        let { collapsed } = this.state;
+        return <Layout style={{ height: '100%'}}>
+            <Sider
+                style={{ overflow: 'auto', height: '100vh' }}
+                trigger={null}
+                collapsible
+                collapsed={ collapsed }
+            >
+                <div className="logo app-name">
+                    <h3>React Admin</h3>
+                </div>
+                <MyMenu />
+            </Sider>
+            <Layout>
+                <Header style={{ background: '#fff', padding: 0 }}>
+                    <div style={{ marginLeft: '15px', cursor: 'pointer' }} onClick={this.toggleMenu}>
+                        <Icon
+                            className="trigger"
+                            type={ collapsed ? 'menu-unfold' : 'menu-fold'}
+                        />
                     </div>
-                    <MyMenu />
-                </Sider>
-                <Layout style={{ marginLeft: 200 }}>
-                    <Header style={{ background: '#fff', padding: 0 }} />
-                    <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-                        <div style={{ padding: 24, background: '#fff', textAlign: 'center' }}>
-                            <Main />
-                        </div>
-                    </Content>
-                    <Footer style={{ textAlign: 'center' }}>
-                        Ant Design ©2016 Created by Ant UED
-                    </Footer>
-                </Layout>
+                </Header>
+                <Content style={{ margin: '15px 15px', overflow: 'initial' }}>
+                    <div className="app-content" style={{ background: '#fff' }}>
+                        <Main />
+                    </div>
+                </Content>
             </Layout>
+        </Layout>
     }
 }
 

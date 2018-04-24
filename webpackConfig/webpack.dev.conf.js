@@ -1,8 +1,9 @@
 /**
  * Created by luwenwei on 17/9/13.
  */
+let webpack = require('webpack');
 let path = require('path');
-let MiniCssExtractPlugin = require('mini-css-extract-plugin')
+let ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 let config = {
     //入口文件输出配置
@@ -14,12 +15,10 @@ let config = {
     },
 
     plugins: [
-        new MiniCssExtractPlugin({
-            // Options similar to the same options in webpackOptions.output
-            // both options are optional
-            filename: '[name].css',
-            chunkFilename: '[id].css'
-        })
+        new webpack.optimize.CommonsChunkPlugin({
+            names: ['jquery','react','vendor','manifest']
+        }),
+        new ExtractTextPlugin('styles.css')
     ]
 };
 

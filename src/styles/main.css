@@ -8,227 +8,25 @@
     color: #ffffff;
 }
 
-.fade-enter {
-    opacity: 0;
-    z-index: 1;
+.app-content .ant-card-body{
+    padding: 15px !important;
 }
 
-.fade-enter.fade-enter-active {
-    opacity: 1;
-    transition: opacity 250ms ease-in;
+.app-content .ant-card-body .data-table{
+    margin-top: 15px;
 }
 
-section.content{
-    padding: 15px;
-}
-
-.hideNavText{
-    max-width: 0;
-    opacity: 0;
-}
-
-.filter-form{
-    margin-bottom: 15px;
-    padding: 0 15px;
-}
-
-.filter-form .form-group,.filter-form .input-group{
-    margin:15px 5px 0 0;
-}
-
-.panel-title-text{
-    margin: 10px 0;
-}
-
-.separator{
-    margin: 0 8px;
-    color: rgba(0, 0, 0, 0.3);
-}
-
-.parent-menu-title{
-    color: rgba(0, 0, 0, 0.65);
-}
-
-.children-menu-title{
-    vertical-align: text-top;
-    color: rgba(0, 0, 0, 0.65);
-    font-weight:initial;
-}
-
-@media screen and (max-width: 1920px) {
-    .table-responsive {
-        width: 100%;
-        margin-bottom: 15px;
-        overflow-y: hidden;
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-        border: 1px solid #ddd;
-    }
-    .table-responsive > .table {
-        margin-bottom: 0;
-    }
-    .table-responsive > .table > thead > tr > th,
-    .table-responsive > .table > tbody > tr > th,
-    .table-responsive > .table > tfoot > tr > th,
-    .table-responsive > .table > thead > tr > td,
-    .table-responsive > .table > tbody > tr > td,
-    .table-responsive > .table > tfoot > tr > td {
-        white-space: nowrap;
-    }
-    .table-responsive > .table-bordered {
-        border: 0;
-    }
-    .table-responsive > .table-bordered > thead > tr > th:first-child,
-    .table-responsive > .table-bordered > tbody > tr > th:first-child,
-    .table-responsive > .table-bordered > tfoot > tr > th:first-child,
-    .table-responsive > .table-bordered > thead > tr > td:first-child,
-    .table-responsive > .table-bordered > tbody > tr > td:first-child,
-    .table-responsive > .table-bordered > tfoot > tr > td:first-child {
-        border-left: 0;
-    }
-    .table-responsive > .table-bordered > thead > tr > th:last-child,
-    .table-responsive > .table-bordered > tbody > tr > th:last-child,
-    .table-responsive > .table-bordered > tfoot > tr > th:last-child,
-    .table-responsive > .table-bordered > thead > tr > td:last-child,
-    .table-responsive > .table-bordered > tbody > tr > td:last-child,
-    .table-responsive > .table-bordered > tfoot > tr > td:last-child {
-        border-right: 0;
-    }
-    .table-responsive > .table-bordered > tbody > tr:last-child > th,
-    .table-responsive > .table-bordered > tfoot > tr:last-child > th,
-    .table-responsive > .table-bordered > tbody > tr:last-child > td,
-    .table-responsive > .table-bordered > tfoot > tr:last-child > td {
-        border-bottom: 0;
-    }
-}
-
-.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-    border: 1px solid #ddd;
-}
-
-.seperate-line{
-    display: inline-block;
-    width:1px;
-    height:20px;
-    background: #cccccc;
-    margin: 0 6px;
-    vertical-align: middle;
-}
-
-.custom-select{
+.app-content .ant-card-body .filter-form .ant-input{
     height: 32px;
-    border:1px solid #cfdadd;
-    color: #555;
-    outline: none;
+    line-height: unset;
 }
 
-.pagination a{
-    cursor: pointer;
-    padding: 6px 12px;
-    display: inline-block;
-}
-
-.pagination .not_allow{
-    cursor: not-allowed;
-}
-
-ul.ui_pagination{
-    vertical-align: middle;
-    display: inline-block;
-    height: 34px;
-}
-
-ul.ui_pagination li{
-    display: inline-block;
-    background: #ffffff;
-    text-align: center;
-}
-
-/*ul.ui_pagination li:not(.not_allow):hover{
-    background: #eeeeee;
-}
-
-ul.ui_pagination li.not_allow:hover{
-    background: #ffffff;
-}*/
-
-ul.ui_pagination li.active{
-    background: #108ee9;
-}
-
-ul.ui_pagination li.active a{
-    color: #ffffff;
-    cursor: default;
-}
-
-ul.ui_pagination li:first-child{
-    border-right: none;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 3px;
-}
-
-ul.ui_pagination li:last-child{
-    border-left: none;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-}
-
-.input-go-page{
-    display: inline-block;
-    height:34px;
-    line-height: 34px;
-    margin-left: 5px;
-}
-
-.input-go-page input,.input-go-page button{
-    display: inline-block;
+.app-content .ant-card-body .filter-form .ant-calendar-picker{
     height: 32px;
-    border-radius: 15px;
 }
 
-
-.input-go-page input{
-    width: 55px;
-    text-align: center;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    color: #767676;
-    border:1px solid #CFDADA;
-    border-right: none;
-    outline: none;
-    height: 33px;
-    vertical-align: top;
-}
-
-.input-go-page button{
-    border:none;
-    height:33px;
-    background: #108ee9;
-    outline: none;
-    color:#fff;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    width: 30px;
-    font-size: 14px;
-}
-
-.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
-    z-index: 3;
-    color: #fff;
-    cursor: default;
-    background-color: #108ee9;
-    border-color: #108ee9;
-}/*重写bootstrap的分页部分样式*/
-
-.btn-icon-round {
-    border-radius: 100%;
-    width:25px;
-    height:25px;
-    line-height: 25px;
-    text-align: center;
-}
-
-.btn-icon i{
-    line-height: 25px;
+.ant-menu-item-selected .nav-text a{
+    color: #ffffff !important;
 }
 
 /*fadeLoader*/
@@ -364,52 +162,13 @@ legend {
     width: auto;
 }
 
-.mySelectBox {
-    position: relative;
-}
-
-.switch-td-panel{
-    outline-style: none;
-    width: 150px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    position: absolute;
-    z-index: 9999;
-    display: none;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 3px 3px 5px #888;
-    max-height: 370px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.switch-td-panel ul{
-    list-style: none;
-}
-
-.switch-td-panel ul li label{
-    white-space: nowrap;
-    width:100px;
-    vertical-align: middle;
-}
-
-.switch-td-panel .myCheckBox{
+.seperate-line{
     display: inline-block;
-    width:18px;
-    height: 18px;
-    border-radius: 2px;
-    color: #fff;
-    text-align: center;
-    line-height: 18px;
-    background: #ffffff;
-    border: 1px solid #dddddd;
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-.switch-td-panel .selectSpan{
-    background: rgb(16, 142, 233);
+    width:1px;
+    height:20px;
+    background: #cccccc;
+    margin: 0 6px;
+    vertical-align: middle;
 }
 /*字段显示选择样式*/
 
