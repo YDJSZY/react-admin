@@ -13,13 +13,22 @@ export default class Custom extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            dataStore:null
+            tableDataSource: null,
+            paginationConfig: {
+                current: 1,
+                pageSizeOptions: ['20', '50', '100', '200'],
+                showSizeChanger: true,
+                pageSize: 20,
+                showQuickJumper: true,
+                showTotal: this.showTotalMes,
+                total: 0
+            }
         }
+        this.currentOrder = '';
         this.loadDataParams = {
-            ordering: "-id",
             page: 1,
             page_size: 20,
-            dateRangeName:"本月份"
+            dateRangeName: '本月份'
         }
     }
 
@@ -27,40 +36,49 @@ export default class Custom extends React.Component{
         return apiPrefix+url;
     }
 
-    fetchData = (params)=> {
+    fetchData = (params) => {
         let requestUrl = this.makeUrl(this.requestUrl);
         let loadDataParams = this.loadDataParams;
-        let new_params = {...loadDataParams,...params || {page:1}};
+        let new_params = { ...loadDataParams, ...params || {page: 1} };
         this.loadDataParams = new_params;
         delete new_params.dateRangeName;
         axios({
-            url:requestUrl,
-            method:"GET",
-            params:new_params,
-            loading:true
-        }).then((res)=>{
-            this.parseResponse(res.data,new_params);
-        },(e)=>{
-            React.$alert("error","数据请求出错");
+            url: requestUrl,
+            method: "GET",
+            params: new_params,
+            loading: true
+        }).then((res) => {
+            this.parseResponse(res.data, new_params);
+        },(e) => {
+            React.$alert("error", "数据请求出错");
             console.error(e);
         })
     }
 
-    parseResponse(data,params) {
-        let dataStore = {
-            defaultCurrent:data.currentPage || 1,
-            totalRecords:data.count || 0,
-            totalPages:data.num_pages || 1,
-            pageSize:params.page_size,
-            currentPage:params.page,
-            results:data.results || []
-        }
+    parseResponse(data, params) {
+        let { paginationConfig, tableDataSource } = this.state;
+        tableDataSource = data.results;
+        paginationConfig.total = data.total;
+        paginationConfig.current = params.page;
         this.setState({
-            dataStore
+            paginationConfig,
+            tableDataSource
         })
     }
 
-    selectChange = (val,prop)=> {
+    tableOnChange = (pagination, filters, sorter) => {
+        this.loadDataParams.page = pagination.pageSize !== this.loadDataParams.page_size ? 1 : pagination.current;
+        this.loadDataParams.page_size = pagination.pageSize;
+        if (sorter.order) this.currentOrder = sorter.field;
+        this.loadDataParams.order = sorter.order ? sorter.field : '-' + this.currentOrder;
+        this.fetchData(this.loadDataParams)
+    }
+
+    showTotalMes = (total, range) => {
+        return `共${total}条数据`
+    }
+
+    selectChange = (val,prop) => {
         this.loadDataParams[prop] = val;
         this.fetchData();
     }/*select搜索*/
@@ -84,10 +102,10 @@ export default class Custom extends React.Component{
         if(type === "create") {
             this.fetchData();
         }else{
-            let dataStore = this.state.dataStore;
-            let i = findObjectIndexById(dataStore.results,res.data.id);
-            dataStore.results.splice(i,1,res.data);
-            this.updateDataStore(dataStore)
+            let tableDataSource = this.state.tableDataSource;
+            let i = findObjectIndexById(tableDataSource,res.data.id);
+            tableDataSource.splice(i,1,res.data);
+            this.updateDataStore(tableDataSource)
         }
     }
 

@@ -24,7 +24,8 @@ export default class ManageUsers extends Custom{
 
     render () {
         let dataModel = this.dataModel;
-        let dataSource = this.state.dataStore ? this.state.dataStore.results : [];
+        let paginationConfig = this.state.paginationConfig;
+        let tableDataSource = this.state.tableDataSource || [];
         return <Card title="用户管理" style={{ width: '100%' }}>
             <Form layout="inline" onSubmit={this.handleSubmit} className="filter-form">
                 <FormItem>
@@ -41,7 +42,10 @@ export default class ManageUsers extends Custom{
                 </FormItem>
             </Form>
             <div className="data-table">
-                <Table dataSource={ dataSource } columns={ dataModel } rowKey="id" />
+                <Table
+                    dataSource={ tableDataSource } columns={ dataModel } rowKey="id"
+                    pagination={ paginationConfig } onChange={ this.tableOnChange }
+                />
             </div>
         </Card>;
     }
