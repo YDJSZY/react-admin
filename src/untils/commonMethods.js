@@ -6,6 +6,18 @@ import  { Route,Redirect } from 'react-router-dom';
 import { constants } from './global';
 import axios from '../config/axiosConfig';
 
+let throttleTime = function (callback, time = 500) {
+    let timer = null;
+    return function () {
+        if (timer) clearTimeout(timer);
+        let args = arguments;
+        timer = setTimeout(function () {
+            callback(...args)
+            timer = null;
+        }, time)
+    }
+}
+
 let getConstantArrayValue = function (group, value) {
     let cs = constants[group];
     if (!cs) {
@@ -92,7 +104,8 @@ let createRoute = function (routes, temporarily) {
     });
 }
 
-export { 
+export {
+    throttleTime,
     getConstantArrayValue,
     getConstantObjectValue,
     translateSelectSource,

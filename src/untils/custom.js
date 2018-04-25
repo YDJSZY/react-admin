@@ -200,7 +200,7 @@ export default class Custom extends React.Component{
 
     createTableCrudModal() {
         if(this.$tableCrudModal){
-            this.tableAction = new TableModalAction(this.$tableCrudModal,this.saveFormCallBack);
+            this.tableAction = new TableModalAction(this.$tableCrudModal, this.saveFormCallBack);
         }/*默认一个页面一个接口，一个table的增删改查*/
     }
 }

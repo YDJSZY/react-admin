@@ -21,18 +21,21 @@ let model = {
                 title: '用户名',
                 key: 'username',
                 dataIndex: 'username',
+                edit: true,
+                type: 'text',
                 show: true,
+                placehoder: '用户名'
             },
             {
-                title: '昵称',
-                key: 'nickname',
-                dataIndex: 'nickname',
+                title: '密码',
+                key: 'password',
+                dataIndex: 'password',
                 show: true,
                 use: true,
                 sorter: true,
                 edit:true,
                 required:true,
-                type:'text',
+                type:'password',
             },
             {
                 title: '联系方式',
@@ -45,15 +48,37 @@ let model = {
                 title: '性别',
                 key: 'sex',
                 dataIndex: 'sex',
-                edit:true,
+                edit: true,
                 show: true,
-                placeholder:'必选',
-                type:'select',
-                required:true,
+                placeholder: '必选',
+                type: 'select',
+                optionValue: 'code',
+                optionText: 'text',
+                required: true,
                 validate: function (record) {
                     if(!record[this.key]) return 'required';
                 },
-                source:'SexType',
+                source: 'sexType',
+                render: function (val) {
+                    return getConstantObjectValue('SexType',val)
+                },
+            },
+            {
+                title: '分类',
+                key: 'category',
+                dataIndex: 'category',
+                edit: true,
+                show: true,
+                placeholder: '必选',
+                type: 'select',
+                optionValue: 'code',
+                optionText: 'text',
+                group: true,
+                required: true,
+                validate: function (record) {
+                    if(!record[this.key]) return 'required';
+                },
+                source: 'category',
                 render: function (val) {
                     return getConstantObjectValue('SexType',val)
                 },
@@ -74,15 +99,19 @@ let model = {
                 },
                 edit:true,
                 type: 'select',
-                source: 'UserPlatform'
+                defaultValue: '_platform',
+                serverSearch: true,
+                source: 'userPlatform',
+                searchData: self.searchPlatform
             },
             {
                 title: '标签',
                 key: 'tags',
                 dataIndex: 'tags',
                 show: true,
-                edit:true,
-                type:'text',
+                edit: true,
+                type: 'radio',
+                source: 'tags',
                 render: function (val) {
                     return val;
                 }
@@ -92,6 +121,7 @@ let model = {
                 key: 'enabled',
                 dataIndex: 'enabled',
                 show: true,
+                edit: true,
                 type:'switch',
                 render: function (val) {
                     return renderEnabled(val);
@@ -129,10 +159,10 @@ let model = {
                 key: 'action',
                 show: true,
                 eyeWatch: false,
-                style:{width:'20px'},
+                style :{width:'20px'},
                 render: (text, record) => {
                     return <span>
-                        <Button type='primary' size='small' style={{ fontSize: '12px'}} onClick={()=>{self.tableAction.edit(record);}}>编辑</Button>
+                        <Button type='primary' size='small' style={{ fontSize: '12px'}} onClick={() => { self.tableAction.edit(record); }}>编辑</Button>
                         <Divider type="vertical" />
                         <a href={'#/orderRecord/?user='+record.id} target='_blank'>
                             <Button type='primary' size='small' style={{ fontSize: '12px'}}>

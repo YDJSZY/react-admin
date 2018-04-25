@@ -15,11 +15,69 @@ export default class ManageUsers extends Custom{
     constructor(props) {
         super(props);
         this.requestUrl = 'data.json/';
+        this.tags = [
+            {value: 'clother', text: '衣服'},
+            {value: 'shoe', text: '鞋子'}
+        ];
         this.dataModel = model.getFields(this);
         this.tableModalConfig = {
-            model:this.dataModel,
+            model: this.dataModel,
             requestUrl: 'data.json'
         };
+        this.state.$source = {}
+    }
+
+    componentWillMount () {
+        setTimeout(() => {
+            this.setState({
+                $source: {
+                    tags: [
+                        {value: 'clother', text: '衣服'},
+                        {value: 'shoe', text: '鞋子'}
+                    ],
+                    sexType: [
+                        {code: 1, text: '男生'},
+                        {code: 2, text: '女生'}
+                    ],
+                    category: [
+                        {
+                            type: '男生',
+                            data: [
+                                {code: 1, text: '小明'},
+                                {code: 2, text: '小天'}
+                            ]
+                        },
+                        {
+                            type: '女生',
+                            data: [
+                                {code: 3, text: '小婷'},
+                                {code: 4, text: '小莲'}
+                            ]
+                        }
+                    ]
+                }
+            })
+        },500)
+    }
+
+    searchPlatform = (keyword,cb) => {
+        console.log(keyword)
+        let { $source } = this.state;
+        $source.userPlatform = [];
+        this.setState({
+            $source
+        });
+        setTimeout(() => {
+            let userPlatform = [
+                {id:1, name: 'PC'},
+                {id:2, name: 'mobile'}
+            ];
+            $source.userPlatform = userPlatform;
+            this.setState({
+                $source
+            });
+            cb();
+        }, 1000);
     }
 
     render () {
@@ -47,6 +105,7 @@ export default class ManageUsers extends Custom{
                     pagination={ paginationConfig } onChange={ this.tableOnChange }
                 />
             </div>
+            <TableCrudModal { ...this.tableModalConfig } source={ this.state.$source } ref={(ref) => { this.$tableCrudModal = ref; }}></TableCrudModal>
         </Card>;
     }
 }

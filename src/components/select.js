@@ -1,71 +1,85 @@
 /**
  * Created by luwenwei on 17/9/3.
  */
-import React from "react";
-import ReactDOM from "react-dom";
-import Select from 'antd/lib/select';
-import 'antd/lib/select/style/css';
-let timer = null;
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Select, Spin } from 'antd';
+import { throttleTime } from '../untils/commonMethods';
+const { Option, OptGroup } = Select;
 
 export default class SelectComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectValue:props.value
+            defaultValue: props.defaultValue,
+            fetching: false
         };
+        this.serverSearchThrottleTime = throttleTime(this.serverSearch)
     }
 
-    selectChange =(selectValue)=> {
-        var model = this.props.model;
-        var ele = ReactDOM.findDOMNode(this.$selectRef);
-        this.props.onSelect(selectValue,model);
-        /*var selectPlaceholder = $(ele).find(".ant-select-selection__placeholder");
-        selectPlaceholder.hide();*/
-        if(selectValue === undefined){
-            //selectPlaceholder.show();
-            selectValue = null;
-        }
-        this.setState({selectValue});
-    }
-
-    searchData =(keyword)=> {
-        if(!this.props.serverSearch) return false;
-        if(timer) clearTimeout(timer);
-        timer = setTimeout(()=>{
-            this.props.searchData(keyword)
-        },500)
-    }
-
-    filterOption =(input, option)=> {
-        return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-    }
-    
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.value !== this.props.value){
+    selectChange = (selectValue) => {
+        let model = this.props.model;
+        this.props.onSelect(selectValue, model);
+        if (this.props.serverSearch) {
             this.setState({
-                selectValue:nextProps.value
+                defaultValue: selectValue
             })
         }
     }
 
+    onSearch = (keyword) => {
+        if (!this.props.serverSearch) return false;/* 是否是服务端搜索 */
+        this.setState({
+            fetching: true
+        });
+        this.serverSearchThrottleTime(keyword);
+    }
+    
+    serverSearch = (keyword) => {
+        this.props.searchData(keyword, () => {
+            this.setState({
+                fetching: false
+            });
+        });
+    }
+
+    filterOption = (input, option) => {
+        return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    }
+    
+    componentWillReceiveProps (nextProps) {
+    }
+
     render() {
-        let { source=[],serverSearch } = this.props;
-        return <Select
-            mode={this.props.mode}
-            value={this.state.selectValue}
-            allowClear={this.props.allowClear === false ? this.props.allowClear : true}
+        let { source=[], serverSearch, group } = this.props;
+        let fetching = this.state.fetching;
+        return (
+            <Select
+            mode={ this.props.mode }/* 模式：单选或者多选'multiple' */
+            defaultValue={ this.props.defaultValue }
+            value={ serverSearch ? this.state.defaultValue : this.props.value }
+            allowClear={ this.props.allowClear === false ? this.props.allowClear : true }
             showSearch
-            onFocus={this.searchData}
-            filterOption={serverSearch ? false : this.filterOption}
+            filterOption={ serverSearch ? false : this.filterOption }
             optionFilterProp="'value'"
-            style={this.props.style}
-            placeholder={this.props.placeholder || '请选择'}
-            onChange={this.selectChange}
-            onSearch={this.searchData}
+            style={ this.props.style }
+            placeholder={ this.props.placeholder || '请选择' }
+            onChange={ this.selectChange }
+            onSearch={ this.onSearch }
+            notFoundContent={ serverSearch ? (fetching ? <Spin size="small" /> : null) : '无数据'}
             ref={(ref) => { this.$selectRef = ref; }}>
-            {source.map((item,index)=>{
-                return <Select.Option key={'_'+index} value={item[this.props.optionValue || 'id']}>{item.name}</Select.Option>
+            {
+                group ? source.map((item, index) => {
+                    return <OptGroup label={ item.type } key={'_'+index}>
+                        {
+                            item.data.map((item, index) => {
+                                return <Option key={'_'+index} value={ item[this.props.optionValue || 'id'] }>{ item[this.props.optionText || 'name'] }</Option>
+                            })
+                        }
+                    </OptGroup>
+                }) : source.map((item, index) => {
+                return <Option key={'_'+index} value={ item[this.props.optionValue || 'id'] }>{ item[this.props.optionText || 'name'] }</Option>
             })}
-        </Select>
+        </Select>)
     }
 }
