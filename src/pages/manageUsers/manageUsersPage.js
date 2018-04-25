@@ -101,6 +101,7 @@ export default class ManageUsers extends Custom{
             </Form>
             <div className="data-table">
                 <Table
+                    scroll={{ x: 1300 }}
                     dataSource={ tableDataSource } columns={ dataModel } rowKey="id"
                     pagination={ paginationConfig } onChange={ this.tableOnChange }
                 />

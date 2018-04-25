@@ -142,7 +142,7 @@ let model = {
                 dataIndex: 'headimg',
                 show: true,
                 edit:true,
-                type:'img',
+                type:'upload',
                 uploadBtnText:'上传头像',
                 render: (val,record) =>{
                     return renderAvatar(val);
@@ -157,9 +157,10 @@ let model = {
             {
                 title: '操作',
                 key: 'action',
+                fixed: 'right',
+                width: 170,
                 show: true,
                 eyeWatch: false,
-                style :{width:'20px'},
                 render: (text, record) => {
                     return <span>
                         <Button type='primary' size='small' style={{ fontSize: '12px'}} onClick={() => { self.tableAction.edit(record); }}>编辑</Button>

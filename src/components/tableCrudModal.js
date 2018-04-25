@@ -3,7 +3,7 @@
  */
 import React from "react";
 import moment from 'moment';
-import { DatePicker, Modal, Form, Input, Switch, Radio } from 'antd';
+import { DatePicker, Modal, Form, Input, Switch, Radio, Upload, Icon } from 'antd';
 import SelectComponent from './select';
 import axios from '../config/axiosConfig';
 import {constants} from '../untils/global';
@@ -177,32 +177,33 @@ export default class TableCrudModal extends React.Component {
                 {
                     model.map((model,index)=>{
                         let tpl;
+                        let key = model.realKey || model.key;
                         if(!model.edit) return null;
                         switch (model.type) {
                             case 'text':
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
-                                    <Input value={ record[model.key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, model.key) }} />
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <Input value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
                                 </FormItem>
                                 break;
                             case 'password':
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
-                                    <Input type="password" value={ record[model.key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, model.key) }} />
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <Input type="password" value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
                                 </FormItem>
                                 break;
                             case 'textarea':
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
-                                    <TextArea value={ record[model.key] } placeholder={ model.placehoder } autosize onChange={ (e) => { this.inputChange(e, model.key) }} />
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <TextArea value={ record[key] } placeholder={ model.placehoder } autosize onChange={ (e) => { this.inputChange(e, key) }} />
                                 </FormItem>
                                 break;
                             case 'switch':
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
-                                    <Switch checked={ record[model.key] } onChange={ (val) => { this.switchChange(val, model.key) }} />
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <Switch checked={ record[key] } onChange={ (val) => { this.switchChange(val, key) }} />
                                 </FormItem>
                                 break;
                             case 'radio':
                                 let radioSource = source[model.source] || [];
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
-                                    <RadioGroup onChange={ (e) => { this.radioOnChange(e, model.key) }} value={ record[model.key] }>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <RadioGroup onChange={ (e) => { this.radioOnChange(e, key) }} value={ record[key] }>
                                         {
                                             radioSource.map((item, index) => {
                                                 return <Radio value={ item.value } key={ index }>{ item.text }</Radio>
@@ -213,7 +214,7 @@ export default class TableCrudModal extends React.Component {
                                 break;
                             case 'select':
                                 let selectSource = source[model.source] || [];/* select下拉资源 */
-                                tpl = <FormItem label={ model.title } key={ model.key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
                                     <SelectComponent
                                         group={ model.group }
                                         searchData={ model.searchData } /* 服务端搜索函数 */
@@ -221,14 +222,24 @@ export default class TableCrudModal extends React.Component {
                                         mode={ model.mode }
                                         style={{ width:"100%" }}
                                         defaultValue={ record[model.defaultValue] } /* 如果是服务端搜索，后端应该要多提供一个字段表示选中的值，供前端展示*/
-                                        value={ record[model.key] }
+                                        value={ record[key] }
                                         optionValue={ model.optionValue } /* 选中下拉option的值是哪个字段值 */
                                         optionText={ model.optionText } /* 下拉option显示的是哪个字段的值 */
                                         allowClear={ model.allowClear }
                                         placeholder={ model.placeholder || "请选择"}
-                                        onSelect={(e) => { this.selectChange(e, model.key) }}
+                                        onSelect={(e) => { this.selectChange(e, key) }}
                                         source={ selectSource }>
                                     </SelectComponent>
+                                </FormItem>
+                                break;
+                            case 'upload':
+                                let { uploadUrl,filename,multi } = model.options;
+                                let updateRecord = (val) =>{
+                                    record[model.key] = val;
+                                    this.setState({record})
+                                }
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                    <UploadImg imgUrl={ record[model.key] } filename={filename} multi={multi} updateRecord={updateRecord} uploadUrl={uploadUrl} />
                                 </FormItem>
                                 break;
                             /*
@@ -277,11 +288,7 @@ export default class TableCrudModal extends React.Component {
                                 </div>
                                 break;
                             case 'img':
-                                let { uploadUrl,filename,multi } = model.options;
-                                let updateRecord = (val)=>{
-                                    record[model.key] = val;
-                                    this.setState({record})
-                                }
+                                
                                 tpl = <div className="col-sm-6 col-md-6 col-xs-12" key={"_"+model.key}>
                                     <div className="form-group">
                                         <label htmlFor={"id_"+model.key} className="col-sm-3 col-md-3 col-xs-3 control-label">
@@ -289,7 +296,7 @@ export default class TableCrudModal extends React.Component {
                                         </label>
                                         <div className="col-sm-8 col-md-8 col-xs-8">
                                             <div style={{width:'100px',height:'100px'}}>
-                                                <UploadImg imgUrl={record[model.key]} filename={filename} multi={multi} updateRecord={updateRecord} uploadUrl={uploadUrl} />
+                                                
                                             </div>
                                         </div>
                                     </div>

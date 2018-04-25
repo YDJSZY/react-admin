@@ -4,14 +4,15 @@ import ShadowContainer from '../shadowContainer/shadowContainer';
 import axios from '../../config/axiosConfig';
 import baseConfig from '../../config/baseConfig'
 import propTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, Icon } from 'antd';
 
 export default class UploadImg extends React.Component{
     static propTypes = {
-        imgUrl:propTypes.string,
-        filename:propTypes.string,
-        updateRecord:propTypes.func,
-        multi:propTypes.string
+        imgUrl: propTypes.string,
+        filename: propTypes.string,
+        updateRecord: propTypes.func,
+        multi: propTypes.string,
+        uploadLimitCount: propTypes.number
     }
 
     constructor(props) {
@@ -25,15 +26,15 @@ export default class UploadImg extends React.Component{
         this.$inputFileEle.click()
     }
 
-    onSelectFile =(e)=> {
+    onSelectFile = (e) => {
         let files = e.target.files;
-        if(files.length === 0) return;
-        if(files[0].type.indexOf("image") === -1){
+        if (files.length === 0) return;
+        if (files[0].type.indexOf("image") === -1){
             alert("请上传图片");
             return;
         }
         this.uploadImg(files);
-        if(window.FileReader) {
+        if (window.FileReader) {
             var oFReader = new FileReader();
             oFReader.onloadend = (e)=> {
                 this.props.updateRecord(e.target.result)
@@ -43,6 +44,7 @@ export default class UploadImg extends React.Component{
     }
 
     uploadImg(files) {
+        return;
         let { uploadUrl,filename,multi } = this.props;
         let formData = new FormData();
         formData.append(filename || "filename", multi ? files : files[0]);
@@ -83,9 +85,12 @@ export default class UploadImg extends React.Component{
 
     render() {
         let styles = {
+            verticalAlign: 'top',
+            margin: '0 3px',
+            display: 'inline-block',
             cursor:'pointer',
-            width:'100%',
-            height:'100%',
+            width:'100px',
+            height:'100px',
             border:'1px dashed #dddddd',
             borderRadius:'2px',
             background: '#F8F8F8',
@@ -94,18 +99,23 @@ export default class UploadImg extends React.Component{
             lineHeight:'90px'
         }
         let { imgUrl } = this.props;
-        return <div style={styles} onClick={this.selectFile} ref={(ref)=>{this.$ContainerEle = ref}}>
-            <input type='file' ref={(ref)=>{this.$inputFileEle = ref}} style={{width:'100%',height:'100%',display:'none'}} />
-            {
-                imgUrl ? <ShadowContainer>
+        return <div>
+            <div style={styles} onClick={this.selectFile} ref={(ref)=>{this.$ContainerEle = ref}}>
+                <Icon type="plus" style={{ fontSize: '20px'}} />
+                <input type='file' ref={(ref)=>{this.$inputFileEle = ref}} style={{width:'100%',height:'100%',display:'none'}} />
+            </div>
+            <div style={styles}>
+                {
+                    imgUrl ? <ShadowContainer>
                         <img src={imgUrl} style={{width:'100%',height:'100%'}} />
-                        <span className='action'>
-                            <i className='fa fa-eye' style={{marginRight:'5px'}} onClick={this.preview}></i>
-                            <i className='fa fa-trash' onClick={this.removeImg}></i>
-                        </span>
+                            <span className='action'>
+                                <Icon type="eye" style={{marginRight:'5px'}} onClick={this.preview}></Icon>
+                                <Icon type="trash" onClick={this.removeImg}></Icon>
+                            </span>
                     </ShadowContainer>
-                    : <i className='fa fa-plus' style={{fontSize:'20px'}}></i>
-            }
+                        : null
+                }
+            </div>
             <Modal visible={this.state.previewVisible} zIndex={9999} footer={null} onCancel={this.handleCancel}>
                 <img alt="example" style={{ width: '100%' }} src={imgUrl} />
             </Modal>
