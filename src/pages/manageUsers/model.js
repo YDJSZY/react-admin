@@ -148,6 +148,7 @@ let model = {
                     return renderAvatar(val);
                 },
                 options: {
+                    fileType: 'image',
                     multi: true,
                     key: 'headimg',
                     callBack: function (file) {

@@ -85,6 +85,7 @@ export default class TableCrudModal extends React.Component {
 
     saveForm =()=> {
         let record = {...this.state.record};
+        console.log(record);
         record = this.beforeSaveForm(record);
         if(this.validateForm(record) === "error") return;
         let method,url = this.props.requestUrl,type = this.state.modalType;
@@ -233,7 +234,7 @@ export default class TableCrudModal extends React.Component {
                                 </FormItem>
                                 break;
                             case 'upload':
-                                let { uploadUrl,filename,multi } = model.options;
+                                let { uploadUrl, filename, multi, fileType } = model.options;
                                 let updateRecord = (val) =>{
                                     if (!multi) {
                                         record[model.key] = val.pop();
@@ -243,7 +244,7 @@ export default class TableCrudModal extends React.Component {
                                     this.setState({record})
                                 }
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
-                                    <UploadImg file={ record[model.key] } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
+                                    <UploadImg file={ record[model.key] } fileType={ fileType } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
                                 </FormItem>
                                 break;
                             /*
