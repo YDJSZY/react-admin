@@ -172,3 +172,11 @@ legend {
 }
 /*字段显示选择样式*/
 
+.clamp{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    width: 100%;
+}
+

@@ -235,11 +235,15 @@ export default class TableCrudModal extends React.Component {
                             case 'upload':
                                 let { uploadUrl,filename,multi } = model.options;
                                 let updateRecord = (val) =>{
-                                    record[model.key] = val;
+                                    if (!multi) {
+                                        record[model.key] = val.pop();
+                                    } else {
+                                        record[model.key] = val;
+                                    }
                                     this.setState({record})
                                 }
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
-                                    <UploadImg imgUrl={ record[model.key] } filename={filename} multi={multi} updateRecord={updateRecord} uploadUrl={uploadUrl} />
+                                    <UploadImg file={ record[model.key] } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
                                 </FormItem>
                                 break;
                             /*
