@@ -97,11 +97,15 @@ let subStrText = function (val, cutTextCount) {
     return newVal;
 }
 
-let createRoute = function (routes, temporarily) {
+let createRoute = (routes, temporarily) => {
     return routes.map((route, i)=> {
         if (route.exact) return <Route key={'route_'+i} exact={route.exact ? route.exact : true} path={route.path} render={()=>{return <Redirect to={'/'+route.redirect+'/'} />}}></Route>
         return <Route path={route.path} key={'route_'+i} render={(match)=>{return temporarily[route.key](match,route.routes)}}></Route>
     });
+}
+
+let isBlank = (val) => {
+    return val === undefined || val === '' || val === null;
 }
 
 export {
@@ -113,5 +117,6 @@ export {
     findObjectIndexById,
     exportData,
     subStrText,
-    createRoute
+    createRoute,
+    isBlank
 };

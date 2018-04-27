@@ -4,11 +4,10 @@
 import MyMenu from './components/nav';
 import Main from './route/index';
 import React from 'react';
-import AlertContainer from 'react-alert';
 import FadeLoader from './components/fakeLoader';
 import { myInfo } from './untils/global';
 import store from './redux/store';
-import { Layout, Icon } from 'antd';
+import { Layout, Icon, message } from 'antd';
 const { Header, Content, Footer, Sider } = Layout;
 
 export default class App extends React.Component {
@@ -18,20 +17,11 @@ export default class App extends React.Component {
             myInfo,
             collapsed: false
         }
-        this.alertOptions = {
-            offset: 14,
-            position: 'top right',
-            theme: 'light',
-            time: 5000,
-            transition: 'scale'
-        }
         React.$alert = this.alert.bind(this);
     }
 
-    alert(type,mes) {
-        this.$alert.show(mes, {
-            type: type
-        })
+    alert (type, mes, duration = 5, onClose) {
+        message[type](mes, duration, onClose)
     }
 
     clearQueueAnimStyle = () => {

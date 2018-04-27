@@ -10,6 +10,7 @@ import {constants} from '../untils/global';
 import baseConfig from '../config/baseConfig';
 import { translateSelectSource } from '../untils/commonMethods';
 import UploadImg from './uploadImg/uploadImg';
+import immutable from 'immutable';
 const modalTitleObj = { create: '新增', edit: '编辑' };
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
@@ -26,16 +27,19 @@ export default class TableCrudModal extends React.Component {
         super(props);
         this.state = {
             visible: false,
-            modalType: "",
+            modalType: '',
             fileList: [],
             record: {},
-            modalTitle: ""
+            modalTitle: '',
+            formModel: []
         };
-        this.model = props.model;
+        this.dataModel = props.model;
     }
 
     open (record, type) {
+        let formModel = immutable.fromJS(this.dataModel);
         this.setState({
+            formModel,
             visible: true,
             record: {...record},
             modalType: type,
@@ -49,31 +53,37 @@ export default class TableCrudModal extends React.Component {
         })
     }
 
-    validateForm(record) {
-        let errors = [],hasRequired,str = '';
-        for(let model of this.model){
-            if(model.type === "date"){
+    validateForm (record) {
+        let errors = [];
+        let formModel = this.state.formModel;
+        let _formModel;
+        formModel.map((_model, index) => {
+            let model = _model.toJS();
+            let key = model.realKey || model.key;/* 先找出key */
+            if (model.type === "date") {
                 record[model.key] = record[model.key] ? moment(record[model.key]._d || record[model.key]).format(model.config.format) : void 0;
             }
-            if(model.required){
-                if(model.validate){
-                    let validateResult = model.validate(record)
-                    if(validateResult) errors.push(validateResult);
-                }else if(!record[model.key]){
-                    errors.push("required");
+            if (model.validate) {
+                let hasError = false;
+                for (let rule of model.validate) {
+                    if (!rule.rule(record[key], record)) {/* 验证不通过 */
+                        model.error = rule.message;
+                        _model.setIn(['error'], rule.message)
+                        errors.push(rule.message);
+                        hasError = true;
+                        console.log(model)
+                        break;
+                    }
                 }
+                //if (!hasError) delete model.error
             }
-        }
-        for(let e of errors){
-            if(e === "required"){
-                hasRequired = true;
-                continue;
-            }
-            str = str + e + ";";
-        }
-        if(hasRequired) str+="必填项不能为空;";
-        if(str.length) {
-            React.$alert("error",str);
+            //console.log(index)
+            //_formModel = formModel.setIn([index, 'tt'], 111);
+        })
+        console.log(_formModel.toJS())
+        this.setState({formModel: _formModel})
+        if(errors.length) {
+            React.$alert('error', '表单填写有误，请检查后再提交');
             return "error";
         }
         return "right";
@@ -85,7 +95,6 @@ export default class TableCrudModal extends React.Component {
 
     saveForm =()=> {
         let record = {...this.state.record};
-        console.log(record);
         record = this.beforeSaveForm(record);
         if(this.validateForm(record) === "error") return;
         let method,url = this.props.requestUrl,type = this.state.modalType;
@@ -157,6 +166,7 @@ export default class TableCrudModal extends React.Component {
     }/*上传文件*/
 
     componentWillReceiveProps (nextProps) {
+
     }
 
     componentWillUnmount() {
@@ -166,9 +176,8 @@ export default class TableCrudModal extends React.Component {
     }
 
     render() {
-        let { record, modalTitle, visible } = this.state;
+        let { record, modalTitle, visible, formModel = [] } = this.state;
         let source = this.props.source;
-        let model = this.model;
         return  <Modal title={ modalTitle }
                    visible={ visible }
                    onOk={this.saveForm}
@@ -176,24 +185,34 @@ export default class TableCrudModal extends React.Component {
                     >
             <Form>
                 {
-                    model.map((model,index)=>{
+                    formModel.map((_model,index)=>{
+                        let model = _model.toJS();
                         let tpl;
-                        let key = model.realKey || model.key;
+                        let key = model.key;
                         if(!model.edit) return null;
                         switch (model.type) {
                             case 'text':
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <Input value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
                                 break;
                             case 'password':
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <Input type="password" value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
                                 break;
                             case 'textarea':
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <TextArea value={ record[key] } placeholder={ model.placehoder } autosize onChange={ (e) => { this.inputChange(e, key) }} />
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
                                 break;
                             case 'switch':
@@ -203,7 +222,7 @@ export default class TableCrudModal extends React.Component {
                                 break;
                             case 'radio':
                                 let radioSource = source[model.source] || [];
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <RadioGroup onChange={ (e) => { this.radioOnChange(e, key) }} value={ record[key] }>
                                         {
                                             radioSource.map((item, index) => {
@@ -211,11 +230,14 @@ export default class TableCrudModal extends React.Component {
                                             })
                                         }
                                     </RadioGroup>
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
                                 break;
                             case 'select':
                                 let selectSource = source[model.source] || [];/* select下拉资源 */
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <SelectComponent
                                         group={ model.group }
                                         searchData={ model.searchData } /* 服务端搜索函数 */
@@ -231,6 +253,9 @@ export default class TableCrudModal extends React.Component {
                                         onSelect={(e) => { this.selectChange(e, key) }}
                                         source={ selectSource }>
                                     </SelectComponent>
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
                                 break;
                             case 'upload':
@@ -243,70 +268,25 @@ export default class TableCrudModal extends React.Component {
                                     }
                                     this.setState({record})
                                 }
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                     <UploadImg file={ record[model.key] } fileType={ fileType } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
                                 </FormItem>
-                                break;
-                            /*
-                            case 'select':
-                                let val = model.value ? record[model.value] : (record[model.key] ? record[model.key] : record[model.key] === 0 ? 0 : "");
-                                let selectSource = this.props.selectSource || {}
-                                tpl = <div className="col-sm-6 col-md-6 col-xs-12" key={"_"+model.key}>
-                                    <div className="form-group">
-                                        <label htmlFor={"id_"+model.key} className="col-sm-3 col-md-3 col-xs-3 control-label">
-                                            {model.title}
-                                        </label>
-                                        <div className="col-sm-8 col-md-8 col-xs-8" style={{height:"34px",lineHeight:"34px"}}>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                break;
-                            case 'textarea':
-                                var config = {key:model.key,type:"textarea",dataSource:record,placeholder:model.placeholder,callBack:this.inputChange};
-                                if(model.required && !record[model.key]) config.className = "warning-border";
-                                tpl = <div className="col-sm-6 col-md-6 col-xs-12" key={"_"+model.key}>
-                                    <div className="form-group">
-                                        <label htmlFor={"id_"+model.key} className="col-sm-3 col-md-3 col-xs-3 control-label">
-                                            {model.title}
-                                        </label>
-                                        <div className="col-sm-8 col-md-8 col-xs-8">
-                                            <InputComponent config={config} />
-                                        </div>
-                                    </div>
-                                </div>
                                 break;
                             case 'date':
                                 let date = record[model.key] ? moment(record[model.key]).format(model.config.format || "YYYY-MM-DD") : null;
                                 let value = date ? moment(date) : null;
-                                tpl = <div className="col-sm-6 col-md-6 col-xs-12" key={"_"+model.key} style={{height:"49px"}}>
-                                    <div className="form-group">
-                                        <label htmlFor={"id_"+model.key} className="col-sm-3 col-md-3 col-xs-3 control-label">
-                                            {model.title}
-                                        </label>
-                                        <div className="col-sm-8 col-md-8 col-xs-8">
-                                            <DatePicker
-                                                value={value} style={{width:"100%",height:"34px"}} placeholder={model.placeholder} showTime={model.config.showTime || false} format={model.config.format || "YYYY-MM-DD"} onChange={(e) => {this.dateChange(e,model.key,model.config.format)}}>
-                                            </DatePicker>
-                                        </div>
-                                    </div>
-                                </div>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
+                                    <DatePicker
+                                        value={value} style={{ width:"100%"}} placeholder={model.placeholder} showTime={model.config.showTime || false} format={model.config.format || "YYYY-MM-DD"} onChange={(e) => {this.dateChange(e,model.key,model.config.format)}}>
+                                    </DatePicker>
+                                    {
+                                        model.error ? <div className="form-error-text">{ model.error }</div> : null
+                                    }
+                                </FormItem>
                                 break;
-                            case 'img':
-                                
-                                tpl = <div className="col-sm-6 col-md-6 col-xs-12" key={"_"+model.key}>
-                                    <div className="form-group">
-                                        <label htmlFor={"id_"+model.key} className="col-sm-3 col-md-3 col-xs-3 control-label">
-                                            {model.title}
-                                        </label>
-                                        <div className="col-sm-8 col-md-8 col-xs-8">
-                                            <div style={{width:'100px',height:'100px'}}>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                break;*/
                         }
                         return tpl;
                     })
