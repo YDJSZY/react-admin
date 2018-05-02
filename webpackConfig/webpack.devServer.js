@@ -63,7 +63,11 @@ let config = {
         new CopyWebpackPlugin([
             { from: './constants.json', to: path.resolve(__dirname, 'dist') },
             { from: './myinfo.json', to: path.resolve(__dirname, 'dist') },
-            { from: './data.json', to: path.resolve(__dirname, 'dist') }
+            { from: './data.json', to: path.resolve(__dirname, 'dist') },
+            { from: './node_modules/tinymce/plugins', to: './plugins' },
+            { from: './node_modules/tinymce/themes', to: './themes' },
+            { from: './node_modules/tinymce/skins', to: './skins' },
+            { from: './node_modules/tinymce/langs', to: './langs' }
         ]),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.optimize.CommonsChunkPlugin({names: ['jquery','react','vendor', 'manifest']}),

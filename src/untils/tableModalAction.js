@@ -3,27 +3,27 @@
  */
 import ReactDOM from "react-dom";
 export default class TableModalAction{
-    constructor(modal,saveFormCallBack) {
+    constructor (modal, saveFormCallBack) {
         this.modal = modal;
         this.modalElement = ReactDOM.findDOMNode(modal);
         this.modal.saveFormCallBack = saveFormCallBack
     }
     
-    create() {
-        var record = this.beforeCreate();
-        this.modal.open(record,"create",this.modalElement);
+    create () {
+        let record = this.beforeCreate();
+        this.modal.open(record, "create", this.modalElement);
     }
 
-    beforeCreate() {
+    beforeCreate () {
         return {};
     }
 
-    edit(record) {
-        var record = this.beforeEdit(record);
-        this.modal.open(record,"edit",this.modalElement);
+    edit (record) {
+        record = this.beforeEdit(record);
+        this.modal.open(record, "edit", this.modalElement);
     }
 
-    beforeEdit(record) {
+    beforeEdit (record) {
         return record;
     }
 }

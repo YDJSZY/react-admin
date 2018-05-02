@@ -1,7 +1,8 @@
 .app-name{
     text-align:center;
     height:64px;
-    line-height:64px
+    line-height:64px;
+    overflow: hidden;
 }
 
 .app-name h3{
@@ -27,6 +28,18 @@
 
 .ant-menu-item-selected .nav-text a{
     color: #ffffff !important;
+}
+
+.nav-text{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.nav-text a{
+    display: inline-block;
+    width: 92%;
+    height: 100%;
 }
 
 /*fadeLoader*/
@@ -187,6 +200,7 @@ legend {
     top: 100%;
     color: #f5222d;
     width: 100%;
+    min-width: 100px;
 }
 
 .required .ant-form-item-label label:before{
@@ -196,3 +210,6 @@ legend {
     color: #f5222d;
 }
 
+.table-form-edit .ant-input-number{
+    width: 100%;
+}

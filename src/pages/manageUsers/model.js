@@ -13,15 +13,18 @@ let model = {
             {
                 title: 'ID',
                 key: 'id',
-                sorter:true,/*服务端排序*/
-                show:true,
+                sorter: true,/*服务端排序*/
+                show: false,
                 dataIndex: 'id'
             },
             {
                 title: '用户名',
                 key: 'username',
                 dataIndex: 'username',
-                edit: true,
+                edit: (record) => {
+                    if (record.password == '123456') return false;
+                    return true;
+                },
                 type: 'text',
                 show: true,
                 placehoder: '用户名',
@@ -34,7 +37,8 @@ let model = {
                         message: '用户名不能为空'
                     }
                 ]
-            },
+            }
+            ,
             {
                 title: '密码',
                 key: 'password',
@@ -71,10 +75,34 @@ let model = {
                 ]
             },
             {
+                title: '年龄',
+                key: 'age',
+                dataIndex: 'age',
+                edit: true,
+                type: 'number',
+                formatter: (value) => {
+                    return value + '岁'
+                },
+                show: true,
+                use: true,
+                required:true,
+                validate: [
+                    {
+                        rule: (val) => {
+                            return !(val > 100);
+                        },
+                        message: '年龄不能大于100'
+                    }
+                ]
+            },
+            {
                 title: '性别',
                 key: 'sex',
                 dataIndex: 'sex',
-                edit: true,
+                edit: (record) => {
+                    if (record.password == '123456') return false;
+                    return true;
+                },
                 show: true,
                 placeholder: '必选',
                 type: 'select',
@@ -213,13 +241,33 @@ let model = {
                 ]
             },
             {
+                title: '爱好',
+                key: 'hobby',
+                dataIndex: 'hobby',
+                required: true,
+                show: true,
+                edit: true,
+                type: 'checkbox',
+                source: 'hobbies'
+            },
+            {
+                title: '城市',
+                key: 'city',
+                dataIndex: 'city',
+                required: true,
+                show: true,
+                edit: true,
+                type: 'cascader',
+                source: 'citys'
+            },
+            {
                 title: '头像',
                 key: 'headimg',
                 dataIndex: 'headimg',
                 show: true,
-                edit:true,
-                type:'upload',
-                uploadBtnText:'上传头像',
+                edit: true,
+                type: 'upload',
+                uploadBtnText: '上传头像',
                 render: (val,record) =>{
                     return renderAvatar(val);
                 },
@@ -231,13 +279,13 @@ let model = {
                         self.uploadFile(file,this.key);
                     }
                 },
-                required:true,
+                required: true,
                 validate: [
                     {
                         rule: (val) => {
                             return !isBlank(val);
                         },
-                        message: '用户名不能为空'
+                        message: '请上传头像'
                     }
                 ]
             },

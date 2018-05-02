@@ -4,13 +4,13 @@
 let path = require('path');
 let CleanWebpackPlugin = require('clean-webpack-plugin');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
-let ExtractTextPlugin = require("extract-text-webpack-plugin");
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
 let env = process.env.NODE_ENV;
 let webpackConfig = {
     //入口文件输出配置
     entry: {
         app:path.resolve(__dirname, './src/index.js'),
-        react:['react', 'react-dom', 'react-router', 'react-router-dom']
+        vendors:['react', 'react-dom', 'react-router', 'react-router-dom', 'tinymce']
     },
     module: {
         //加载器配置

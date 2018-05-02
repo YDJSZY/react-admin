@@ -83,7 +83,7 @@ export default class Custom extends React.Component{
         this.fetchData();
     }/*select搜索*/
 
-    search = ()=> {
+    search = () => {
         this.fetchData();
     }
 
@@ -91,17 +91,17 @@ export default class Custom extends React.Component{
         this.loadDataParams.search = e.target.value;
     }
 
-    inputEnter = (e)=> {
-        if(e.keyCode === 13) {
+    inputEnter = (e) => {
+        if (e.keyCode === 13) {
             this.loadDataParams.search = e.target.value;
             this.search();
         }
     }/*enter搜索*/
 
-    saveFormCallBack = (res,type)=> {
-        if(type === "create") {
+    saveFormCallBack = (res, type)=> {
+        if (type === "create") {
             this.fetchData();
-        }else{
+        } else {
             let tableDataSource = this.state.tableDataSource;
             let i = findObjectIndexById(tableDataSource,res.data.id);
             tableDataSource.splice(i,1,res.data);
@@ -109,20 +109,20 @@ export default class Custom extends React.Component{
         }
     }
 
-    uploadFile(file,key) {
+    uploadFile (file, key) {
         console.log(file)
         console.log(key)
     }
 
-    dateRangeChange = (dateRange,noReq)=> {
+    dateRangeChange = (dateRange,noReq) => {
         this.loadDataParams.begin_time = +new Date(dateRange.begin_time);
         this.loadDataParams.end_time = +new Date(dateRange.end_time);
-        if(dateRange.dateRangeName == "自定义") return;
-        if(noReq) return;
+        if (dateRange.dateRangeName == "自定义") return;
+        if (noReq) return;
         this.fetchData();
     }/*日期查询范围改变*/
 
-    switchUse = (id,enabled,url,field)=> {
+    switchUse = (id, enabled, url, field) => {
         let obj = {};
         obj[field || "enabled"] = enabled;
         url = url || this.requestUrl;
@@ -131,7 +131,7 @@ export default class Custom extends React.Component{
             "method":"PATCH",
             "data":obj
         }).then(function (res) {
-            if(res.status >= 200 &&  res.status <= 301) {
+            if (res.status >= 200 &&  res.status <= 301) {
                 let e = enabled ? "已启用" : "已禁用";
                 this.translateResponse(res.data);
                 React.$alert("success",e);
@@ -141,7 +141,7 @@ export default class Custom extends React.Component{
         }.bind(this))
     }
 
-    translateResponse = (data)=> {
+    translateResponse = (data) => {
         let dataStore = this.state.dataStore;
         let results = dataStore.results;
         let index = findObjectIndexById(results,data.id);
@@ -149,57 +149,57 @@ export default class Custom extends React.Component{
         this.updateDataStore(dataStore)
     }
 
-    updateDataStore = (dataStore,cb)=> {
-        this.setState({dataStore},cb)
+    updateDataStore = (dataStore, cb) => {
+        this.setState({dataStore}, cb)
     }
 
-    cutPath(path) {/*切割路由*/
+    cutPath (path) {/*切割路由*/
         this.currentRoute = path.split("/")[1];
         this.setLocalStorage();
         this.getStorageByCurrentRoute(this.currentRoute);
     }
 
-    getStorageByCurrentRoute(currentRoute) {
+    getStorageByCurrentRoute (currentRoute) {
         this.currentRouteStorage = $localStorage[currentRoute] ? $localStorage[currentRoute] : ($localStorage[currentRoute] = {});
         this.setSomeParams();
     }/*获取当前路由下的一些参数*/
 
-    setSomeParams() {
-        if(this.currentRouteStorage.loadDataParams){
+    setSomeParams () {
+        if (this.currentRouteStorage.loadDataParams){
             this.loadDataParams = this.currentRouteStorage.loadDataParams
-        } else{
+        }  else {
             this.currentRouteStorage.loadDataParams = this.loadDataParams;
         }/*从localstorage获取当前页面的一些请求参数*/
         //console.log(this.currentRouteStorage)
     }
 
-    setLocalStorage() {
+    setLocalStorage () {
         $localStorage.route = this.currentRoute;
         //$localStorage[this.currentRoute].loadDataParams = this.loadDataParams;
         setLocalStorage($localStorage);
     }
 
-    componentWillMount() {
+    componentWillMount () {
         // this.routeMessage = this.props.match;/*当前页面的路由信息*/
         //this.cutPath(this.routeMessage.match.path)
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         //this.setLocalStorage();
     }
 
-    componentDidMount() {
+    componentDidMount () {
         this.createTableCrudModal()
         this.fetchData();
     }
 
-    clearQueueAnimStyle = ()=> {
+    clearQueueAnimStyle = () => {
         $(".content").css({transform:"none"});
         this.init();
     }
 
-    createTableCrudModal() {
-        if(this.$tableCrudModal){
+    createTableCrudModal () {
+        if (this.$tableCrudModal) {
             this.tableAction = new TableModalAction(this.$tableCrudModal, this.saveFormCallBack);
         }/*默认一个页面一个接口，一个table的增删改查*/
     }

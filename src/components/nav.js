@@ -22,7 +22,13 @@ export default class MyMenu extends React.Component {
             <Menu.Item key="1">
                 <Icon type="user" />
                 <span className="nav-text">
-                    <Link to="/manageUsers/">用户</Link>
+                    <Link to="/manageUsers/">user</Link>
+                </span>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <Icon type="edit" />
+                <span className="nav-text">
+                    <Link to="/tinymce/">tinymce</Link>
                 </span>
             </Menu.Item>
         </Menu>;

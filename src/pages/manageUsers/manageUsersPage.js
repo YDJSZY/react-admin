@@ -9,6 +9,7 @@ import TableCrudModal from '../../components/tableCrudModal';
 import Custom from '../../untils/custom';
 import tableActionHoc from '../../hoc/tableActionHoc';
 import DateRange from '../../components/dateRange';
+import TinymceComponent from '../../components/tinymce/tinymce';
 const FormItem = Form.Item;
 
 export default class ManageUsers extends Custom{
@@ -19,7 +20,7 @@ export default class ManageUsers extends Custom{
             {value: 'clother', text: '衣服'},
             {value: 'shoe', text: '鞋子'}
         ];
-        this.dataModel = model.getFields(this);
+        this.dataModel = model.getFields(this).filter((m) => { return m.show });/* 当某些列并不需要显示时 */
         this.tableModalConfig = {
             model: this.dataModel,
             requestUrl: 'data.json'
@@ -54,7 +55,36 @@ export default class ManageUsers extends Custom{
                                 {code: 4, text: '小莲'}
                             ]
                         }
-                    ]
+                    ],
+                    hobbies: [
+                        {value: 1, label: '篮球'},
+                        {value: 2, label: '足球'},
+                        {value: 3, label: '绣花'},
+                        {value: 4, label: '听歌'}
+                    ],
+                    citys: [{
+                        value: 1,
+                        label: '浙江',
+                        children: [{
+                            value: 1,
+                            label: '杭州',
+                            children: [{
+                                value: 1,
+                                label: '西湖',
+                            }],
+                        }],
+                    }, {
+                        value: 2,
+                        label: '江苏',
+                        children: [{
+                            value: 1,
+                            label: '南京',
+                            children: [{
+                                value: 1,
+                                label: '中华门',
+                            }],
+                        }],
+                    }]
                 }
             })
         },500)
@@ -96,7 +126,10 @@ export default class ManageUsers extends Custom{
                     <Input prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="搜索" />
                 </FormItem>
                 <FormItem>
-                    <Button type='primary' onClick={this.search}>搜索</Button>
+                    <Button type='primary' onClick={ this.search }>搜索</Button>
+                </FormItem>
+                <FormItem style={{ float: 'right'}}>
+                    <Button type='primary' onClick={ () => { this.tableAction.create() }}>新增</Button>
                 </FormItem>
             </Form>
             <div className="data-table">

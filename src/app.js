@@ -58,7 +58,7 @@ export default class App extends React.Component {
             </Sider>
             <Layout>
                 <Header style={{ background: '#fff', padding: 0 }}>
-                    <div style={{ marginLeft: '15px', cursor: 'pointer' }} onClick={this.toggleMenu}>
+                    <div style={{ marginLeft: '15px', cursor: 'pointer', width: '14px', height: '14px' }} onClick={this.toggleMenu}>
                         <Icon
                             className="trigger"
                             type={ collapsed ? 'menu-unfold' : 'menu-fold'}

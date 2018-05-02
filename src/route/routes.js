@@ -9,6 +9,10 @@ const routes = [
         path: '/manageUsers/',
         key: 'manageUsers'
     },
+    {
+        path: '/tinymce/',
+        key: 'tinymce'
+    },
     /*{
         path: '/comments/',
         key: 'comments'
