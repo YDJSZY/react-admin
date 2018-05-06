@@ -21,6 +21,7 @@ let model = {
                 title: '用户名',
                 key: 'username',
                 dataIndex: 'username',
+                width: 120,
                 edit: (record) => {
                     if (record.password == '123456') return false;
                     return true;
@@ -43,6 +44,7 @@ let model = {
                 title: '密码',
                 key: 'password',
                 dataIndex: 'password',
+                width: 120,
                 show: true,
                 use: true,
                 sorter: true,
@@ -62,6 +64,7 @@ let model = {
                 title: '联系方式',
                 key: 'phone',
                 dataIndex: 'phone',
+                width: 150,
                 show: true,
                 use: true,
                 required:true,
@@ -83,21 +86,23 @@ let model = {
                 formatter: (value) => {
                     return value + '岁'
                 },
+                width: 120,
                 show: true,
                 use: true,
                 required:true,
                 validate: [
                     {
                         rule: (val) => {
-                            return !(val > 100);
+                            return !(val > 120);
                         },
-                        message: '年龄不能大于100'
+                        message: '年龄不能大于120'
                     }
                 ]
             },
             {
                 title: '性别',
                 key: 'sex',
+                width: 120,
                 dataIndex: 'sex',
                 edit: (record) => {
                     if (record.password == '123456') return false;
@@ -127,6 +132,7 @@ let model = {
                 key: 'category',
                 dataIndex: 'category',
                 edit: true,
+                width: 120,
                 show: true,
                 placeholder: '必选',
                 type: 'select',
@@ -151,12 +157,14 @@ let model = {
                 title: '活跃度',
                 key: 'activity',
                 dataIndex: 'activity',
+                width: 120,
                 show: true
             },
             {
                 title: '来源平台',
                 key: 'platform',
                 dataIndex: 'platform',
+                width: 150,
                 show: true,
                 /*render: function (val) {
                     return getConstantObjectValue('UserPlatform', val);
@@ -181,18 +189,29 @@ let model = {
                 title: '标签',
                 key: 'tags',
                 dataIndex: 'tags',
+                width: 120,
                 show: true,
                 edit: true,
                 type: 'radio',
                 source: 'tags',
                 render: function (val) {
                     return val;
-                }
+                },
+                required:true,
+                validate: [
+                    {
+                        rule: (val) => {
+                            return !isBlank(val);
+                        },
+                        message: '请选择标签'
+                    }
+                ],
             },
             {
                 title: '关注',
                 key: 'enabled',
                 dataIndex: 'enabled',
+                width: 120,
                 show: true,
                 edit: true,
                 type:'switch',
@@ -204,6 +223,7 @@ let model = {
                 title: '创建时间',
                 key: 'created',
                 dataIndex: 'created',
+                width: 250,
                 show: true,
                 edit: true,
                 type:'date',
@@ -227,6 +247,7 @@ let model = {
                 title: '描述',
                 key: 'description',
                 dataIndex: 'description',
+                width: 120,
                 show: true,
                 edit: true,
                 type:'textarea',
@@ -245,6 +266,7 @@ let model = {
                 key: 'hobby',
                 dataIndex: 'hobby',
                 required: true,
+                width: 120,
                 show: true,
                 edit: true,
                 type: 'checkbox',
@@ -255,6 +277,7 @@ let model = {
                 key: 'city',
                 dataIndex: 'city',
                 required: true,
+                width: 120,
                 show: true,
                 edit: true,
                 type: 'cascader',
@@ -264,6 +287,7 @@ let model = {
                 title: '头像',
                 key: 'headimg',
                 dataIndex: 'headimg',
+                width: 120,
                 show: true,
                 edit: true,
                 type: 'upload',
@@ -286,6 +310,25 @@ let model = {
                             return !isBlank(val);
                         },
                         message: '请上传头像'
+                    }
+                ]
+            },
+            {
+                title: '领取奖励',
+                key: 'radioTest',
+                dataIndex: 'radioTest',
+                required: true,
+                width: 150,
+                show: true,
+                edit: true,
+                custom: true,
+                type: 'cascader',
+                validate: [
+                    {
+                        rule: (val) => {
+                            return !isBlank(val);
+                        },
+                        message: '不能为空'
                     }
                 ]
             },

@@ -80,7 +80,7 @@ export default class TableCrudModal extends React.Component {
         console.log(_formModel.toJS())
         this.setState({formModel: _formModel})
         if(errors.length) {
-            React.$alert('error', '表单填写有误，请检查后再提交');
+            React.$alert('error', '表单填写有误，请检查后再提交.');
             return "error";
         }
         return "right";
@@ -209,6 +209,7 @@ export default class TableCrudModal extends React.Component {
                         if (typeof model.edit === 'function') {
                             if (!model.edit(record)) return null;
                         }
+                        if (model.custom) return this.props.children(record, model, this)
                         switch (model.type) {
                             case 'text':
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
@@ -352,36 +353,8 @@ export default class TableCrudModal extends React.Component {
                         return tpl;
                     })
                 }
+                { }
             </Form>
         </Modal>
-        /*<div className="modal fade" data-backdrop="static" data-effect="zoom" data-tabindex="-1" data-role="dialog" id="tableCrudModal">
-            <div className="modal-dialog modal-lg">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <button type="button" className="close" data-dismiss="modal" data-aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                        <h4 className="modal-title">{modalTitle}</h4>
-                    </div>
-                    <div className="modal-body">
-                        <form className="form-horizontal" data-role="form" id="editForm">
-                            <div className="row">
-                                
-                            </div>
-                            <div className="row">
-                                {
-                                    this.props.children ? this.props.children(record) : null
-                                }
-                            </div>
-                        </form>
-                    </div>
-                    <div className="modal-footer">
-                        <span className="pull-right">
-                            <button type="button" className="btn btn-warning" data-dismiss="modal">取消</button>
-                            <button type="button" className="btn btn-success" onClick={this.saveForm}>保存</button>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>*/
     }
 }

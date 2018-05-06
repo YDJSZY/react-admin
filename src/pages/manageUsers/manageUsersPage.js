@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import { model } from './model';
-import { Card, Button, Form, Input, Icon, Table } from 'antd';
+import { Card, Button, Form, Input, Icon, Table, Radio, InputNumber } from 'antd';
 import DataTable from '../../components/dataTable';
 import TableCrudModal from '../../components/tableCrudModal';
 import Custom from '../../untils/custom';
@@ -11,6 +11,17 @@ import tableActionHoc from '../../hoc/tableActionHoc';
 import DateRange from '../../components/dateRange';
 import TinymceComponent from '../../components/tinymce/tinymce';
 const FormItem = Form.Item;
+const RadioGroup = Radio.Group;
+const formItemLayout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 16 }
+}
+const radioStyle = {
+    display: 'block',
+    height: '30px',
+    lineHeight: '30px',
+    marginButtom: '15px'
+}
 
 export default class ManageUsers extends Custom{
     constructor(props) {
@@ -110,6 +121,10 @@ export default class ManageUsers extends Custom{
         }, 1000);
     }
 
+    onRadioChange = (val) => {
+
+    }
+
     render () {
         let dataModel = this.dataModel;
         let paginationConfig = this.state.paginationConfig;
@@ -134,12 +149,46 @@ export default class ManageUsers extends Custom{
             </Form>
             <div className="data-table">
                 <Table
-                    scroll={{ x: 1300 }}
+                    scroll={{ x: 1800 }}
                     dataSource={ tableDataSource } columns={ dataModel } rowKey="id"
                     pagination={ paginationConfig } onChange={ this.tableOnChange }
                 />
             </div>
-            <TableCrudModal { ...this.tableModalConfig } source={ this.state.$source } ref={(ref) => { this.$tableCrudModal = ref; }}></TableCrudModal>
+            <TableCrudModal { ...this.tableModalConfig } source={ this.state.$source } ref={(ref) => { this.$tableCrudModal = ref; }}>
+                {
+                    (record, model, parent) => {
+                        switch (model.key) {
+                            case 'radioTest':
+                                return (
+                                    <FormItem label={ model.title } {...formItemLayout} className={ model.required ? 'required' : '' }>
+                                        <RadioGroup onChange={ (e) => { parent.radioOnChange(e, model.key) }} value={ record[model.key] }>
+                                            <Radio style={ radioStyle } value={1}>
+                                                固定值
+                                                {
+                                                    record.radioTest === 1 ? <Input placeholder="固定值" style={{marginLeft: '10px'}} onChange={ (e) => { parent.inputChange(e, 'confirmVal') }} value={ record.confirmVal }/> : null
+                                                }
+                                                {
+                                                    model.error ? <div className="form-error-text" style={{top: '50%'}}><span>{ model.error }</span></div> : null
+                                                }
+                                            </Radio>
+                                            <Radio style={ radioStyle } value={2}>
+                                                随机值
+                                                {
+                                                    record.radioTest === 2 ? <span><InputNumber value={ record.minVal } placeholder="最小值" onChange={ (value) => { parent.valueChange(value, 'minVal') }} style={{marginLeft: '10px', width: '100px', display: 'inline-block'}}/>
+                                                        <InputNumber placeholder="最大值" onChange={ (value) => { parent.valueChange(value, 'maxVal') }} value={ record.maxVal } style={{marginLeft: '10px', width: '100px', display: 'inline-block'}} />
+                                                    </span> : null
+                                                }
+                                                {
+                                                    model.error ? <div className="form-error-text" style={{top: '50%'}}><span>{ model.error }</span></div> : null
+                                                }
+                                            </Radio>
+                                        </RadioGroup>
+                                    </FormItem>
+                                )
+                        }
+                    }
+                }
+            </TableCrudModal>
         </Card>;
     }
 }

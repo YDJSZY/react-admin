@@ -31,8 +31,12 @@ let config = {
     },
 
     plugins: [
+        new webpack.optimize.ModuleConcatenationPlugin(),
         new webpack.optimize.CommonsChunkPlugin({
-            names: ['vendors','manifest']
+            async: 'used-twice',
+            minChunks: (module, count) => (
+                count >= 2
+            )
         }),
         new CopyWebpackPlugin([
             { from: './node_modules/tinymce/skins', to: './skins' }
@@ -46,7 +50,9 @@ let config = {
             mangle:false,
             except: ['$super', '$', 'exports', 'require']    //排除关键字
         })
-    ]
+    ],
+
+    devtool: 'false'
 }
 
 module.exports = config;
