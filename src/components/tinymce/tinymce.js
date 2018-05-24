@@ -4,7 +4,7 @@
 import React from 'react';
 import tinyMce from 'tinymce/tinymce';
 import 'tinymce/themes/modern/theme';
-import 'tinymce/langs/zh_CN';
+//import 'tinymce/langs/zh_CN';
 import 'tinymce/plugins/preview';
 import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/wordcount';

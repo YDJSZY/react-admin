@@ -1,7 +1,7 @@
 /**
  * Created by luwenwe on 2017/9/18.
  */
-import React from 'react';
+import React from 'react'
 
 function iiHOC(WrappedComponent) {
     return class NewComponent extends WrappedComponent {

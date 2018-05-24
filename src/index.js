@@ -1,16 +1,16 @@
 /**
  * Created by luwenwei on 17/2/5.
  */
-import React from 'react';
-import ReactDom from 'react-dom';
-import { HashRouter } from 'react-router-dom';
-import axios from './config/axiosConfig';
-import App from './app';
-import { setMyInfo,setConstants } from './untils/global';
-import './styles/main.css';
-import './styles/someReset.css';
-import { Provider } from 'react-redux';
-import store from './redux/store';
+import React from 'react'
+import ReactDom from 'react-dom'
+import { HashRouter } from 'react-router-dom'
+import axios from './config/axiosConfig'
+import App from './app'
+import { setMyInfo,setConstants } from './untils/global'
+import './styles/main.css'
+import './styles/someReset.css'
+import { Provider } from 'react-redux'
+import store from './redux/store'
 
 async function init() {
     /*let myInfo = await axios.get('/myinfo.json/');
@@ -23,7 +23,11 @@ async function init() {
                 <App />
             </HashRouter>
         </Provider>
-    ), document.getElementById('root'));
+    ), document.getElementById('root'))
 }
-init();
+init()
+
+if (module.hot) {
+    module.hot.accept()
+}
 

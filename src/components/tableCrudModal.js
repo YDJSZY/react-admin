@@ -11,14 +11,21 @@ import baseConfig from '../config/baseConfig';
 import { translateSelectSource } from '../untils/commonMethods';
 import UploadImg from './uploadImg/uploadImg';
 import immutable from 'immutable';
+import formItemError from '../hoc/formItemError';
 const modalTitleObj = { create: '新增', edit: '编辑' };
 const FormItem = Form.Item;
 const TextArea = Input.TextArea;
 const RadioGroup = Radio.Group;
 const CheckboxGroup = Checkbox.Group;
 const formItemLayout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 16 }
+    labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 }
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 }
+    }
 }
 
 export default class TableCrudModal extends React.Component {
@@ -195,9 +202,11 @@ export default class TableCrudModal extends React.Component {
         let { record, modalTitle, visible, formModel = [] } = this.state;
         let source = this.props.source;
         return  <Modal title={ modalTitle }
-                   visible={ visible }
-                   onOk={this.saveForm}
-                   onCancel={this.hide}
+                    maskClosable={ false }
+                    width={ 620 }
+                    visible={ visible }
+                    onOk={this.saveForm}
+                    onCancel={this.hide}
                     >
             <Form className="table-form-edit">
                 {
@@ -212,74 +221,77 @@ export default class TableCrudModal extends React.Component {
                         if (model.custom) return this.props.children(record, model, this)
                         switch (model.type) {
                             case 'text':
+                                let inputNode = <Input value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) } } />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <Input value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(inputNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'password':
+                                let passwordNode = <Input type="password" value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) } } />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <Input type="password" value={ record[key] } placeholder={ model.placehoder } onChange={ (e) => { this.inputChange(e, key) }} />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(passwordNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'textarea':
+                                let textareaNode = <TextArea value={ record[key] } placeholder={ model.placehoder } autosize onChange={ (e) => { this.inputChange(e, key) }} />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <TextArea value={ record[key] } placeholder={ model.placehoder } autosize onChange={ (e) => { this.inputChange(e, key) }} />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(textareaNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'switch':
+                                let switchNode = <Switch checked={ record[key] } onChange={ (val) => { this.switchChange(val, key) }} />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout}>
-                                    <Switch checked={ record[key] } onChange={ (val) => { this.switchChange(val, key) }} />
+                                    {
+                                        formItemError(switchNode, model.error)
+                                    }
                                 </FormItem>
                                 break;
                             case 'radio':
                                 let radioSource = source[model.source] || [];
-                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <RadioGroup onChange={ (e) => { this.radioOnChange(e, key) }} value={ record[key] }>
-                                        {
-                                            radioSource.map((item, index) => {
-                                                return <Radio value={ item.value } key={ index }>{ item.text }</Radio>
-                                            })
-                                        }
-                                    </RadioGroup>
+                                let radioNode = <RadioGroup onChange={ (e) => { this.radioOnChange(e, key) }} value={ record[key] }>
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        radioSource.map((item, index) => {
+                                            return <Radio value={ item.value } key={ index }>{ item.text }</Radio>
+                                        })
+                                    }
+                                </RadioGroup>
+                                tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
+                                    {
+                                        formItemError(radioNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'select':
                                 let selectSource = source[model.source] || [];/* select下拉资源 */
+                                let selectNode =  <SelectComponent
+                                    group={ model.group }
+                                    searchData={ model.searchData } /* 服务端搜索函数 */
+                                    serverSearch={ model.serverSearch }/* 是否支持服务端搜索 */
+                                    mode={ model.mode }
+                                    style={{ width:"100%" }}
+                                    defaultValue={ record[model.defaultValue] } /* 如果是服务端搜索，后端应该要多提供一个字段表示选中的值，供前端展示*/
+                                    value={ record[key] }
+                                    optionValue={ model.optionValue } /* 选中下拉option的值是哪个字段值 */
+                                    optionText={ model.optionText } /* 下拉option显示的是哪个字段的值 */
+                                    allowClear={ model.allowClear }
+                                    placeholder={ model.placeholder || "请选择"}
+                                    onSelect={(e) => { this.selectChange(e, key) }}
+                                    source={ selectSource }>
+                                </SelectComponent>
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <SelectComponent
-                                        group={ model.group }
-                                        searchData={ model.searchData } /* 服务端搜索函数 */
-                                        serverSearch={ model.serverSearch }/* 是否支持服务端搜索 */
-                                        mode={ model.mode }
-                                        style={{ width:"100%" }}
-                                        defaultValue={ record[model.defaultValue] } /* 如果是服务端搜索，后端应该要多提供一个字段表示选中的值，供前端展示*/
-                                        value={ record[key] }
-                                        optionValue={ model.optionValue } /* 选中下拉option的值是哪个字段值 */
-                                        optionText={ model.optionText } /* 下拉option显示的是哪个字段的值 */
-                                        allowClear={ model.allowClear }
-                                        placeholder={ model.placeholder || "请选择"}
-                                        onSelect={(e) => { this.selectChange(e, key) }}
-                                        source={ selectSource }>
-                                    </SelectComponent>
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(selectNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'upload':
-                                let { uploadUrl, filename, multi, fileType } = model.options;
+                                let { uploadUrl, filename, multi, fileType } = model.options
                                 let updateRecord = (val) =>{
                                     if (!multi) {
                                         record[model.key] = val.pop();
@@ -288,44 +300,44 @@ export default class TableCrudModal extends React.Component {
                                     }
                                     this.setState({record})
                                 }
+                                let uploadNode = <UploadImg file={ record[model.key] } fileType={ fileType } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <UploadImg file={ record[model.key] } fileType={ fileType } filename={ filename } multi={ multi } updateRecord={ updateRecord } uploadUrl={ uploadUrl } />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(uploadNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'date':
                                 let date = record[model.key] ? moment(record[model.key]).format(model.config.format || "YYYY-MM-DD") : null;
                                 let value = date ? moment(date) : null;
+                                let datePickerNode = <DatePicker
+                                    value={value} style={{ width:"100%"}} placeholder={model.placeholder} showTime={model.config.showTime || false} format={model.config.format || "YYYY-MM-DD"} onChange={(e) => {this.dateChange(e,model.key,model.config.format)}}>
+                                </DatePicker>
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <DatePicker
-                                        value={value} style={{ width:"100%"}} placeholder={model.placeholder} showTime={model.config.showTime || false} format={model.config.format || "YYYY-MM-DD"} onChange={(e) => {this.dateChange(e,model.key,model.config.format)}}>
-                                    </DatePicker>
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(datePickerNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'checkbox':
-                                let checkboxSource = source[model.source] || [];
+                                let checkboxSource = source[model.source] || []
+                                let checkboxNode = <CheckboxGroup options={ checkboxSource } value={ record[model.key] } onChange={ (value) => { this.onCheckboxChange(value, key) }} />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <CheckboxGroup options={ checkboxSource } value={ record[model.key] } onChange={ (value) => { this.onCheckboxChange(value, key) }} />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(checkboxNode, model.error)
                                     }
                                 </FormItem>
                                 break;
                             case 'cascader':
                                 let cascaderSource = source[model.source] || [];
+                                let cascaderNode = <Cascader options={ cascaderSource } value={ record[model.key] }
+                                    onChange={ (value) => { this.onCascaderChange(value, key) }}
+                                    placeholder={ model.placeholder || '请选择'}
+                                    showSearch={ true } changeOnSelect={ true } expandTrigger="hover"
+                                />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <Cascader options={ cascaderSource } value={ record[model.key] }
-                                              onChange={ (value) => { this.onCascaderChange(value, key) }}
-                                              placeholder={ model.placeholder || '请选择'}
-                                              showSearch={ true } changeOnSelect={ true } expandTrigger="hover"
-                                    />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(cascaderNode, model.error)
                                     }
                                 </FormItem>
                                 break;
@@ -335,17 +347,17 @@ export default class TableCrudModal extends React.Component {
                                 let step = model.step;
                                 let formatter = model.formatter;/* 指定输入框展示值的格式 function(value: number | string): string*/
                                 let parser = model.parser;/* 指定从 formatter 里转换回数字的方式，和 formatter 搭配使用 function( string): number*/
+                                let numberNode = <InputNumber min={ min } max={ max } style={{ width: '100%' }}
+                                    step={ step }
+                                    value={ record[model.key] }
+                                    formatter={ formatter }
+                                    parser = { parser }
+                                    onChange={ (value) => { this.valueChange(value, key) }}
+                                    placeholder={ model.placeholder}
+                                />
                                 tpl = <FormItem label={ model.title } key={ key } {...formItemLayout} className={ model.required ? 'required' : '' }>
-                                    <InputNumber min={ min } max={ max } style={{ width: '100%' }}
-                                                step={ step }
-                                                value={ record[model.key] }
-                                                formatter={ formatter }
-                                                parser = { parser }
-                                                onChange={ (value) => { this.valueChange(value, key) }}
-                                                placeholder={ model.placeholder}
-                                    />
                                     {
-                                        model.error ? <div className="form-error-text"><span>{ model.error }</span></div> : null
+                                        formItemError(numberNode, model.error)
                                     }
                                 </FormItem>
                                 break;

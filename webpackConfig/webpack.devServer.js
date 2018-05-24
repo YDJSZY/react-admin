@@ -19,7 +19,7 @@ let config = {
         port: port,
         historyApiFallback: true,
         hot: true,
-        host: '0.0.0.0',
+        host: '127.0.0.1',
         inline: true,
         progress: true,
         headers: {
@@ -67,10 +67,17 @@ let config = {
             { from: './node_modules/tinymce/plugins', to: './plugins' },
             { from: './node_modules/tinymce/themes', to: './themes' },
             { from: './node_modules/tinymce/skins', to: './skins' },
-            { from: './node_modules/tinymce/langs', to: './langs' }
+            { from: './src/images', to: './images' }
+            //{ from: './node_modules/tinymce/langs', to: './langs' }
         ]),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({names: ['jquery','react','vendor', 'manifest']}),
+        new webpack.optimize.ModuleConcatenationPlugin(),
+        new webpack.optimize.CommonsChunkPlugin({
+            async: 'used-twice',
+            minChunks: (module, count) => (
+                count >= 2
+            )
+        }),
         new ExtractTextPlugin('styles.css')
     ]
 };

@@ -10,7 +10,7 @@ let webpackConfig = {
     //入口文件输出配置
     entry: {
         app:path.resolve(__dirname, './src/index.js'),
-        //vendors:['react', 'axios', 'react-dom', 'react-router', 'react-router-dom', 'tinymce']
+        vendors: ['react', 'react-dom', 'axios', 'immutable', 'moment', 'react-router', 'react-router-dom']
     },
     module: {
         //加载器配置

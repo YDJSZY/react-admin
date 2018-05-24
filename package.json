@@ -8,10 +8,10 @@
     "clean:prod": "rm -rf dist",
     "dev": "export NODE_ENV=development && webpack --w --progress --colors",
     "prod": "export NODE_ENV=production && webpack --w --progress --colors",
-    "start": "export NODE_ENV=server && webpack-dev-server --devtool eval --progress --colors --content-base server --inline --hot --open-page 'index.html'",
-    "dev:window": "set NODE_ENV=development&& webpack --w --progress --colors",
-    "prod:window": "set NODE_ENV=production&& webpack --w --progress --colors",
-    "server:window": "set NODE_ENV=server&& webpack-dev-server --devtool eval --progress --colors --content-base server --inline --hot"
+    "start": "export NODE_ENV=server && webpack-dev-server --devtool eval --progress --colors --content-base server --inline --open-page 'index.html'",
+    "dev:w": "set NODE_ENV=development&& webpack --w --progress --colors",
+    "prod:w": "set NODE_ENV=production&& webpack --w --progress --colors",
+    "start:w": "set NODE_ENV=server&& webpack-dev-server --devtool eval --progress --colors --content-base server --inline --open-page index.html"
   },
   "author": "lww",
   "license": "ISC",

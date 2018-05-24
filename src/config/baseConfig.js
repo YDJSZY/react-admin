@@ -1,7 +1,7 @@
 /**
  * Created by luwenwe on 2017/9/20.
  */
-var baseConfig = {
+let baseConfig = {
     localStorageName:"pingdan",
     apiPrefix:'/',
 };/*基础配置*/

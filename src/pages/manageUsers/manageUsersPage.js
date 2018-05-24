@@ -160,7 +160,7 @@ export default class ManageUsers extends Custom{
                         switch (model.key) {
                             case 'radioTest':
                                 return (
-                                    <FormItem label={ model.title } {...formItemLayout} className={ model.required ? 'required' : '' }>
+                                    <FormItem key={ model.key } label={ model.title } {...formItemLayout} className={ model.required ? 'required' : '' }>
                                         <RadioGroup onChange={ (e) => { parent.radioOnChange(e, model.key) }} value={ record[model.key] }>
                                             <Radio style={ radioStyle } value={1}>
                                                 固定值
